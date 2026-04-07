@@ -1,9 +1,0 @@
-[phases.build]
-cmds = [
-    "curl -fsSL https://pecl.php.net/get/mongodb | tar -xz && cd mongodb-* && phpize && ./configure && make && make install",
-    "echo 'extension=mongodb.so' > /usr/local/etc/php/conf.d/mongodb.ini",
-    "composer install --optimize-autoloader --no-scripts --no-interaction"
-]
-
-[start]
-cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
