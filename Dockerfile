@@ -1,13 +1,11 @@
 FROM php:8.2-fpm
 
-# Install dependencies
 RUN apt-get update && apt-get install -y \
     git curl zip unzip libssl-dev \
-    && pecl install mongodb \
+    && pecl install mongodb-1.21.0 \
     && docker-php-ext-enable mongodb \
     && apt-get clean
 
-# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
