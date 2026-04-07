@@ -1,10 +1,13 @@
 FROM php:8.2-fpm
 
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libssl-dev \
+    git curl zip unzip libssl-dev ca-certificates \
     && pecl install mongodb-1.21.0 \
     && docker-php-ext-enable mongodb \
     && apt-get clean
+
+# Update CA certificates
+RUN update-ca-certificates
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
