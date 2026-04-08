@@ -120,7 +120,9 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 28px;
-            position: sticky; top: 0; z-index: 30;
+            position: sticky;
+            top: 15px;
+            z-index: 30;
         }
         .topbar-title { font-size: 14px; font-weight: 600; }
         .topbar-sub { font-size: 12px; color: var(--text-3); margin-top: 1px; }
@@ -206,7 +208,6 @@
 <aside class="sidebar">
     <div class="sidebar-logo">
         <a href="/">Tunara</a>
-        <span>Local → Public</span>
     </div>
 
     <nav class="sidebar-nav">

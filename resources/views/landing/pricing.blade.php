@@ -4,100 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing — Tunara</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg:#050508;--bg-2:#0a0a10;--bg-3:#111118;--bg-4:#18181f;
-            --border:rgba(255,255,255,0.06);--border-2:rgba(255,255,255,0.12);
-            --text:#f0f0ff;--text-2:#8888aa;--text-3:#44445a;
-            --accent:#6c63ff;--accent-2:#a78bfa;--accent-3:#38bdf8;
-            --green:#22d3a0;--red:#ff5f7e;--yellow:#fbbf24;
-            --font:'DM Sans',sans-serif;--display:'Syne',sans-serif;
-            --radius:16px;--radius-sm:10px;
+            --bg:#030305;--bg-2:#080810;--bg-3:#0d0d18;--bg-4:#12121f;
+            --border:rgba(255,255,255,0.05);--border-2:rgba(255,255,255,0.1);--border-3:rgba(255,255,255,0.15);
+            --text:#f0f0ff;--text-2:#7878a0;--text-3:#3a3a58;
+            --accent:#5b7fff;--accent-2:#a78bfa;--accent-3:#22d3ee;
+            --green:#10d98a;--red:#ff4d6a;--yellow:#fbbf24;
+            --font:'Geist',sans-serif;--mono:'JetBrains Mono',monospace;
+            --r:12px;--r-lg:20px;
         }
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         html{scroll-behavior:smooth}
-        body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+        body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;cursor:none}
         a{color:inherit;text-decoration:none}
+        button{font-family:var(--font);cursor:none;border:none;background:none}
 
-        body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.4}
-        .grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(108,99,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
-        .orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
-        .orb-1{width:500px;height:500px;background:rgba(108,99,255,0.08);top:-150px;right:-100px}
-        .orb-2{width:350px;height:350px;background:rgba(56,189,248,0.05);bottom:100px;left:-80px}
+        .cursor{width:8px;height:8px;background:var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform 0.1s ease;mix-blend-mode:screen}
+        .cursor-ring{width:32px;height:32px;border:1px solid rgba(91,127,255,0.4);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all 0.15s ease}
 
-        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-        .nav-logo{font-family:var(--display);font-size:22px;font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent-2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .nav-links{display:flex;align-items:center;gap:28px;list-style:none}
-        .nav-links a{font-size:14px;font-weight:500;color:var(--text-2);transition:color 0.2s}
-        .nav-links a:hover,.nav-links a.active{color:var(--text)}
-        .nav-actions{display:flex;align-items:center;gap:12px}
-        .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font);font-weight:500;border-radius:var(--radius-sm);transition:all 0.2s;cursor:pointer;border:none;font-size:14px}
-        .btn-ghost{background:transparent;color:var(--text-2);padding:8px 18px;border:1px solid var(--border)}
-        .btn-ghost:hover{border-color:var(--border-2);color:var(--text)}
-        .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;padding:10px 22px;font-weight:600;box-shadow:0 0 30px rgba(108,99,255,0.25)}
-        .btn-primary:hover{opacity:0.9;transform:translateY(-1px)}
-        .btn-xl{padding:16px 40px;font-size:17px;border-radius:14px;font-weight:700}
+        .bg-mesh{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+        .mesh-orb{position:absolute;border-radius:50%;filter:blur(100px);animation:orbFloat 20s ease-in-out infinite}
+        .orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(91,127,255,0.07) 0%,transparent 70%);top:-150px;right:-150px;animation-delay:0s}
+        .orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(167,139,250,0.05) 0%,transparent 70%);bottom:100px;left:-100px;animation-delay:-10s}
+        @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-30px) scale(1.05)}}
+        .dot-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%)}
 
-        .page-header{padding:140px 40px 80px;text-align:center;position:relative;z-index:1}
-        .page-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
-        .page-tag::before{content:'';width:20px;height:1px;background:var(--accent)}
-        .page-title{font-family:var(--display);font-size:clamp(40px,6vw,72px);font-weight:800;letter-spacing:-0.04em;line-height:1.05;margin-bottom:16px}
-        .page-title .accent{background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .page-sub{font-size:18px;color:var(--text-2);max-width:500px;margin:0 auto;line-height:1.65}
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:56px;display:flex;align-items:center;justify-content:space-between;background:rgba(3,3,5,0.7);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--border)}
+        .nav-logo{font-family:var(--font);font-size:15px;font-weight:700;color:var(--text);letter-spacing:-0.02em;display:flex;align-items:center;gap:8px}
+        .nav-logo-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+        .nav-links{display:flex;align-items:center;gap:4px;list-style:none}
+        .nav-links a{font-size:13px;font-weight:400;color:var(--text-2);padding:6px 12px;border-radius:6px;transition:color 0.2s,background 0.2s}
+        .nav-links a:hover,.nav-links a.active{color:var(--text);background:rgba(255,255,255,0.04)}
+        .nav-actions{display:flex;align-items:center;gap:8px}
 
-        .pricing-section{padding:60px 40px 120px;max-width:1000px;margin:0 auto;position:relative;z-index:1}
-        .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--font);font-size:13px;font-weight:500;border-radius:8px;transition:all 0.2s;cursor:none;border:none;white-space:nowrap}
+        .btn-ghost{background:transparent;color:var(--text-2);padding:7px 14px;border:1px solid var(--border-2)}
+        .btn-ghost:hover{color:var(--text);border-color:var(--border-3);background:rgba(255,255,255,0.03)}
+        .btn-primary{background:var(--accent);color:white;padding:8px 18px;font-weight:600;position:relative;overflow:hidden}
+        .btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.15) 0%,transparent 50%);opacity:0;transition:opacity 0.2s}
+        .btn-primary:hover::before{opacity:1}
+        .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(91,127,255,0.35)}
 
-        .pricing-card{background:var(--bg-2);border:1px solid var(--border);border-radius:24px;padding:40px;position:relative;transition:transform 0.3s}
-        .pricing-card:hover{transform:translateY(-6px)}
-        .pricing-card.featured{border-color:rgba(108,99,255,0.35);background:linear-gradient(135deg,rgba(108,99,255,0.07),rgba(167,139,250,0.03));box-shadow:0 0 60px rgba(108,99,255,0.12)}
+        .page-hero{padding:120px 48px 72px;text-align:center;position:relative;z-index:1}
+        .sec-label{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px}
+        .sec-label::before { display: none; }
+        .page-title{font-size:clamp(32px,5vw,56px);font-weight:800;letter-spacing:-0.04em;line-height:1.08;margin-bottom:14px}
+        .page-sub{font-size:15px;color:var(--text-2);max-width:440px;margin:0 auto;line-height:1.7}
 
-        .pricing-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:4px 14px;border-radius:100px;margin-bottom:20px}
-        .pricing-plan{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px}
-        .pricing-price{font-family:var(--display);font-size:60px;font-weight:800;letter-spacing:-0.04em;line-height:1;margin-bottom:6px}
-        .pricing-price sup{font-size:24px;font-weight:600;vertical-align:super;margin-right:2px}
-        .pricing-price .period{font-size:15px;font-weight:400;color:var(--text-3)}
-        .pricing-desc{font-size:14px;color:var(--text-2);margin-bottom:28px;line-height:1.6}
-        .pricing-divider{height:1px;background:var(--border);margin-bottom:28px}
-        .pricing-features{display:flex;flex-direction:column;gap:14px;margin-bottom:36px}
-        .pricing-feature{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.5}
-        .pfi{width:17px;height:17px;flex-shrink:0;margin-top:2px}
-        .pfi.yes{color:var(--green)} .pfi.no{color:var(--text-3)}
-        .pricing-feature.dim{color:var(--text-3)}
-        .pricing-cta{width:100%;padding:15px;font-size:15px;font-weight:600;border-radius:12px;text-align:center;display:block}
+        .pricing-section{padding:0 48px 100px;max-width:900px;margin:0 auto;position:relative;z-index:1}
+        .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 
-        .faq-section{padding:80px 40px 120px;max-width:760px;margin:0 auto;position:relative;z-index:1}
-        .faq-title{font-family:var(--display);font-size:32px;font-weight:800;text-align:center;margin-bottom:48px}
-        .faq-item{border-bottom:1px solid var(--border);padding:20px 0}
-        .faq-q{font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;user-select:none}
-        .faq-icon{font-size:18px;color:var(--text-3);transition:transform 0.25s;flex-shrink:0}
-        .faq-a{font-size:14px;color:var(--text-2);line-height:1.7;max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding-top 0.3s ease}
-        .faq-item.open .faq-a{max-height:200px;padding-top:14px}
-        .faq-item.open .faq-icon{transform:rotate(45deg)}
+        .price-card{background:var(--bg-2);border:1px solid var(--border-2);border-radius:var(--r-lg);padding:32px;transition:transform 0.3s,border-color 0.3s}
+        .price-card:hover{transform:translateY(-4px)}
+        .price-card.pro{border-color:rgba(91,127,255,0.25);background:linear-gradient(135deg,rgba(91,127,255,0.06),rgba(167,139,250,0.02));position:relative;overflow:hidden}
+        .price-card.pro::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent-2),transparent)}
+        .price-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--accent);background:rgba(91,127,255,0.1);border:1px solid rgba(91,127,255,0.2);padding:3px 10px;border-radius:100px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px}
+        .price-plan{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text-3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px}
+        .price-amount{font-size:48px;font-weight:700;letter-spacing:-0.05em;line-height:1;margin-bottom:6px}
+        .price-amount sup{font-size:20px;font-weight:500;vertical-align:super}
+        .price-period{font-size:13px;color:var(--text-3);font-weight:400}
+        .price-desc{font-size:13px;color:var(--text-2);margin-bottom:22px;line-height:1.6;margin-top:8px}
+        .price-div{height:1px;background:var(--border);margin-bottom:22px}
+        .price-features{display:flex;flex-direction:column;gap:11px;margin-bottom:26px}
+        .pf{display:flex;align-items:flex-start;gap:9px;font-size:13px;line-height:1.5}
+        .pf-icon{width:15px;height:15px;flex-shrink:0;margin-top:1px}
+        .pf-icon.on{color:var(--green)} .pf-icon.off{color:var(--text-3)}
+        .pf.muted{color:var(--text-3)}
+        .price-btn{width:100%;padding:11px;font-size:13px;font-weight:600;border-radius:8px;text-align:center;display:block;transition:all 0.2s}
+        .price-btn.outline{border:1px solid var(--border-2);color:var(--text-2)}
+        .price-btn.outline:hover{border-color:var(--border-3);color:var(--text);background:rgba(255,255,255,0.03)}
+        .price-btn.fill{background:var(--accent);color:white;position:relative;overflow:hidden}
+        .price-btn.fill::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);opacity:0;transition:opacity 0.2s}
+        .price-btn.fill:hover::before{opacity:1}
+        .price-btn.fill:hover{box-shadow:0 8px 24px rgba(91,127,255,0.35);transform:translateY(-1px)}
+        .pricing-note{text-align:center;font-family:var(--mono);font-size:11px;color:var(--text-3);margin-top:16px}
 
-        footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:48px 40px 32px;text-align:center}
-        .footer-logo{font-family:var(--display);font-size:20px;font-weight:800;background:linear-gradient(135deg,#fff,var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px}
-        .footer-links-row{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:24px}
-        .footer-links-row a{font-size:13.5px;color:var(--text-2);transition:color 0.2s}
-        .footer-links-row a:hover{color:var(--text)}
-        .footer-copy{font-size:13px;color:var(--text-3)}
+        .faq-section{padding:72px 48px 100px;max-width:720px;margin:0 auto;position:relative;z-index:1}
+        .faq-header{text-align:center;margin-bottom:48px}
+        .faq-item{border-bottom:1px solid var(--border)}
+        .faq-q{font-size:14px;font-weight:500;cursor:none;display:flex;align-items:center;justify-content:space-between;gap:12px;user-select:none;padding:18px 0;color:var(--text-2);transition:color 0.2s}
+        .faq-q:hover{color:var(--text)}
+        .faq-item.open .faq-q{color:var(--text)}
+        .faq-icon{font-family:var(--mono);font-size:14px;color:var(--text-3);transition:transform 0.25s;flex-shrink:0}
+        .faq-item.open .faq-icon{transform:rotate(45deg);color:var(--accent)}
+        .faq-a{font-size:13px;color:var(--text-2);line-height:1.75;max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding 0.3s ease}
+        .faq-item.open .faq-a{max-height:200px;padding-bottom:18px}
 
-        ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--bg-4);border-radius:2px}
-        @media(max-width:768px){nav{padding:0 20px}.nav-links{display:none}.pricing-grid{grid-template-columns:1fr}.page-header{padding:100px 20px 60px}.pricing-section,.faq-section{padding:40px 20px 80px}}
+        footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:40px 48px 28px}
+        .footer-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+        .footer-brand{font-family:var(--font);font-size:14px;font-weight:700;color:var(--text)}
+        .footer-links{display:flex;align-items:center;gap:20px}
+        .footer-links a{font-size:12px;color:var(--text-3);transition:color 0.15s}
+        .footer-links a:hover{color:var(--text-2)}
+        .footer-copy{font-family:var(--mono);font-size:11px;color:var(--text-3)}
+
+        ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--bg-4)}
+        @media(max-width:768px){body{cursor:auto}.cursor,.cursor-ring{display:none}nav{padding:0 20px}.nav-links{display:none}.page-hero{padding:88px 20px 52px}.pricing-section,.faq-section{padding:0 20px 72px}.pricing-grid{grid-template-columns:1fr}.footer-inner{flex-direction:column;gap:16px;text-align:center}}
     </style>
 </head>
 <body>
 
-<div class="grid-bg"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="bg-mesh"><div class="mesh-orb orb-1"></div><div class="mesh-orb orb-2"></div></div>
+<div class="dot-grid"></div>
 
 <nav>
-    <a href="{{ route('home') }}" class="nav-logo">Tunara</a>
+    <a href="{{ route('home') }}" class="nav-logo">
+        <div class="nav-logo-dot"></div>
+        Tunara
+    </a>
     <ul class="nav-links">
         <li><a href="{{ route('home') }}">Home</a></li>
-        <li><a href="{{ route('home') }}#how-it-works">How it Works</a></li>
+        <li><a href="{{ route('home') }}#how-it-works">How it works</a></li>
         <li><a href="{{ route('home') }}#features">Features</a></li>
         <li><a href="{{ route('pricing') }}" class="active">Pricing</a></li>
         <li><a href="{{ route('download') }}">Download</a></li>
@@ -107,204 +129,127 @@
         <a href="{{ route('dashboard') }}" class="btn btn-primary">Dashboard →</a>
         @else
         <a href="{{ route('login') }}" class="btn btn-ghost">Sign in</a>
-        <a href="{{ route('register') }}" class="btn btn-primary">Get Started</a>
+        <a href="{{ route('register') }}" class="btn btn-primary">Get started</a>
         @endauth
     </div>
 </nav>
 
-<div class="page-header">
-    <div class="page-tag">Pricing</div>
-    <h1 class="page-title">Simple, <span class="accent">honest</span> pricing</h1>
-    <p class="page-sub">Start for free. Upgrade when you need more power. No hidden fees, no lock-in.</p>
+<div class="page-hero">
+    <div class="sec-label">pricing</div>
+    <h1 class="page-title">Simple, honest pricing</h1>
+    <p class="page-sub">Start free. Upgrade when you need more. No hidden fees, no contracts.</p>
 </div>
 
 <div class="pricing-section">
     <div class="pricing-grid">
         <!-- FREE -->
-        <div class="pricing-card">
-            <div class="pricing-plan">Free</div>
-            <div class="pricing-price"><sup>₹</sup>0<span class="period">/month</span></div>
-            <div class="pricing-desc">Perfect for solo developers sharing projects with clients or teammates for quick review and feedback.</div>
-            <div class="pricing-divider"></div>
-            <div class="pricing-features">
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>{{ $free->max_tunnels ?? 1 }} active tunnel at a time</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>{{ $free->max_requests_per_day == -1 ? 'Unlimited' : number_format($free->max_requests_per_day ?? 1000) }} requests per day</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Secure HTTPS tunnel</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Unlimited viewers per tunnel</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Real-time request logs in desktop app</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Deep link auto-fill (Open in App)</span>
-                </div>
-                <div class="pricing-feature {{ $free->has_custom_subdomain ? '' : 'dim' }}">
-                    <svg class="pfi {{ $free->has_custom_subdomain ? 'yes' : 'no' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        @if($free->has_custom_subdomain)
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                        @else
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        @endif
-                    </svg>
-                    <span>Custom subdomain</span>
-                </div>
-                <div class="pricing-feature {{ $free->has_password_protection ? '' : 'dim' }}">
-                    <svg class="pfi {{ $free->has_password_protection ? 'yes' : 'no' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        @if($free->has_password_protection)
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                        @else
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        @endif
-                    </svg>
-                    <span>Password-protected tunnels</span>
-                </div>
-                <div class="pricing-feature dim">
-                    <svg class="pfi no" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                    <span>Priority support</span>
-                </div>
+        <div class="price-card">
+            <div class="price-plan">Free</div>
+            <div class="price-amount"><sup>₹</sup>0<span class="price-period"> /month</span></div>
+            <div class="price-desc">Perfect for solo devs sharing projects with clients or teammates for review.</div>
+            <div class="price-div"></div>
+            <div class="price-features">
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>{{ $free->max_tunnels ?? 1 }} active tunnel at a time</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>{{ $free->max_requests_per_day == -1 ? 'Unlimited' : number_format($free->max_requests_per_day ?? 1000) }} requests/day</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Secure HTTPS tunnel</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Unlimited viewers</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Real-time request logs</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Deep link auto-fill</div>
+                <div class="pf {{ $free->has_custom_subdomain ? '' : 'muted' }}"><svg class="pf-icon {{ $free->has_custom_subdomain ? 'on' : 'off' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">@if($free->has_custom_subdomain)<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>@else<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>@endif</svg>Custom subdomain</div>
+                <div class="pf {{ $free->has_password_protection ? '' : 'muted' }}"><svg class="pf-icon {{ $free->has_password_protection ? 'on' : 'off' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">@if($free->has_password_protection)<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>@else<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>@endif</svg>Password protection</div>
+                <div class="pf muted"><svg class="pf-icon off" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>Priority support</div>
             </div>
-            <a href="{{ route('register') }}" class="btn btn-ghost pricing-cta">Get Started Free</a>
+            <a href="{{ route('register') }}" class="price-btn outline">Get started free</a>
         </div>
 
         <!-- PRO -->
-        <div class="pricing-card featured">
-            <div class="pricing-badge">⭐ Most Popular</div>
-            <div class="pricing-plan">Pro</div>
-            <div class="pricing-price"><sup>₹</sup>{{ number_format($pro->price ?? 9, 0) }}<span class="period">/month</span></div>
-            <div class="pricing-desc">For professionals who need multiple tunnels, custom domains, password protection, and priority support.</div>
-            <div class="pricing-divider"></div>
-            <div class="pricing-features">
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>{{ $pro->max_tunnels ?? 5 }} active tunnels at a time</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>{{ $pro->max_requests_per_day == -1 ? 'Unlimited' : number_format($pro->max_requests_per_day) }} requests per day</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Secure HTTPS tunnel</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Unlimited viewers per tunnel</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Full logs & analytics dashboard</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Deep link auto-fill (Open in App)</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Custom subdomain (yourname.tunara.dev)</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Password-protected tunnel URLs</span>
-                </div>
-                <div class="pricing-feature">
-                    <svg class="pfi yes" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    <span>Priority support</span>
-                </div>
+        <div class="price-card pro">
+            <div class="price-badge">⭐ Most popular</div>
+            <div class="price-plan">Pro</div>
+            <div class="price-amount"><sup>₹</sup>{{ number_format($pro->price ?? 9, 0) }}<span class="price-period"> /month</span></div>
+            <div class="price-desc">For professionals who need multiple tunnels, custom domains, and advanced security.</div>
+            <div class="price-div"></div>
+            <div class="price-features">
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>{{ $pro->max_tunnels ?? 5 }} active tunnels</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>{{ $pro->max_requests_per_day == -1 ? 'Unlimited' : number_format($pro->max_requests_per_day) }} requests/day</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Secure HTTPS tunnel</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Unlimited viewers</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Full logs & analytics</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Deep link auto-fill</div>
+                <div class="pf {{ $pro->has_custom_subdomain ? '' : 'muted' }}"><svg class="pf-icon {{ $pro->has_custom_subdomain ? 'on' : 'off' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">@if($pro->has_custom_subdomain)<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>@else<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>@endif</svg>Custom subdomain</div>
+                <div class="pf {{ $pro->has_password_protection ? '' : 'muted' }}"><svg class="pf-icon {{ $pro->has_password_protection ? 'on' : 'off' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">@if($pro->has_password_protection)<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>@else<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>@endif</svg>Password protection</div>
+                <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Priority support</div>
             </div>
-            <a href="{{ route('register') }}" class="btn btn-primary pricing-cta">Upgrade to Pro</a>
+            <a href="{{ route('register') }}" class="price-btn fill">Upgrade to Pro</a>
         </div>
     </div>
-
-    <p style="text-align:center;font-size:13px;color:var(--text-3);margin-top:28px;">All plans include unlimited viewers. Pay monthly, cancel anytime. No contracts.</p>
+    <p class="pricing-note">All plans include unlimited viewers. Cancel anytime. No lock-in.</p>
 </div>
 
-<!-- FAQ -->
 <div class="faq-section">
-    <div class="faq-title">Frequently asked questions</div>
-
-    <div class="faq-item">
-        <div class="faq-q">
-            Do I need a credit card to sign up?
-            <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-a">No. The free plan requires no credit card. You only need to provide payment details when upgrading to Pro.</div>
+    <div class="faq-header">
+        <div class="sec-label">faq</div>
+        <h2 style="font-size:clamp(24px,3vw,36px);font-weight:700;letter-spacing:-0.03em">Frequently asked questions</h2>
     </div>
 
     <div class="faq-item">
-        <div class="faq-q">
-            Can I cancel my Pro subscription anytime?
-            <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-a">Yes, absolutely. You can cancel your Pro subscription at any time from your account settings. Your account will revert to the free plan at the end of the billing period.</div>
+        <div class="faq-q">Do I need a credit card to sign up? <span class="faq-icon">+</span></div>
+        <div class="faq-a">No. The free plan requires no credit card. You only need payment details when upgrading to Pro.</div>
     </div>
-
     <div class="faq-item">
-        <div class="faq-q">
-            What happens when I reach my request limit?
-            <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-a">On the free plan, once you reach your daily request limit, additional requests will be blocked until the next day. Upgrading to Pro gives you unlimited requests.</div>
+        <div class="faq-q">Can I cancel my Pro subscription anytime? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Yes. Cancel anytime from your account settings. Your account reverts to the free plan at the end of the billing period.</div>
     </div>
-
     <div class="faq-item">
-        <div class="faq-q">
-            Is my data secure while using Tunara?
-            <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-a">Yes. All tunnels use HTTPS with SSL certificates. Tunara acts as a relay — we forward requests but do not store the content of your HTTP traffic. Your auth token ensures only you can control your tunnels.</div>
+        <div class="faq-q">What happens when I reach my request limit? <span class="faq-icon">+</span></div>
+        <div class="faq-a">On the free plan, additional requests are blocked until the next day once you hit your limit. Pro gives you unlimited requests.</div>
     </div>
-
     <div class="faq-item">
-        <div class="faq-q">
-            Can multiple people view my tunnel URL at the same time?
-            <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-a">Yes! All plans support unlimited simultaneous viewers. Anyone with the public URL can access your local project as long as your desktop app tunnel is active.</div>
+        <div class="faq-q">Is my data secure while using Tunara? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Yes. All tunnels use HTTPS with SSL. Tunara acts as a relay — we forward requests but don't store your HTTP traffic content. Token-based auth ensures only you control your tunnels.</div>
     </div>
-
     <div class="faq-item">
-        <div class="faq-q">
-            What frameworks and languages does Tunara support?
-            <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-a">Any framework or language that runs a local web server — Laravel, Next.js, Django, Rails, Express, Vue, React, and more. If it runs on localhost with a port, Tunara can tunnel it.</div>
+        <div class="faq-q">Can multiple people view my tunnel at the same time? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Yes. All plans support unlimited simultaneous viewers. Anyone with the URL can access your project as long as your tunnel is active.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">What frameworks does Tunara support? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Any framework that runs a local web server — Laravel, Next.js, Django, Rails, Express, Vue, React, and more. If it runs on localhost, Tunara tunnels it.</div>
     </div>
 </div>
 
 <footer>
-    <div class="footer-logo">Tunara</div>
-    <div class="footer-links-row">
-        <a href="{{ route('home') }}">Home</a>
-        <a href="{{ route('home') }}#features">Features</a>
-        <a href="{{ route('pricing') }}">Pricing</a>
-        <a href="{{ route('download') }}">Download</a>
-        <a href="{{ route('login') }}">Sign In</a>
-        <a href="{{ route('register') }}">Sign Up</a>
+    <div class="footer-inner">
+        <div class="footer-brand">Tunara</div>
+        <div class="footer-links">
+            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route('home') }}#features">Features</a>
+            <a href="{{ route('pricing') }}">Pricing</a>
+            <a href="{{ route('download') }}">Download</a>
+            <a href="{{ route('login') }}">Sign in</a>
+        </div>
+        <div class="footer-copy">© {{ date('Y') }} Tunara</div>
     </div>
-    <div class="footer-copy">© {{ date('Y') }} Tunara. All rights reserved.</div>
 </footer>
 
 <script>
-    document.querySelectorAll('.faq-item').forEach(item => {
-        item.querySelector('.faq-q').addEventListener('click', () => {
-            const isOpen = item.classList.contains('open');
-            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-            if (!isOpen) item.classList.add('open');
-        });
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-4+'px';cursor.style.top=my-4+'px'});
+function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx-16+'px';ring.style.top=ry-16+'px';requestAnimationFrame(animRing)}
+animRing();
+document.querySelectorAll('a,button').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)';ring.style.transform='scale(1.5)';ring.style.borderColor='rgba(91,127,255,0.6)'});
+    el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';ring.style.transform='scale(1)';ring.style.borderColor='rgba(91,127,255,0.4)'});
+});
+document.querySelectorAll('.faq-item').forEach(item=>{
+    item.querySelector('.faq-q').addEventListener('click',()=>{
+        const isOpen=item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+        if(!isOpen)item.classList.add('open');
     });
+});
 </script>
 </body>
 </html>

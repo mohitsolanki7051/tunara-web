@@ -4,113 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download — Tunara</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg:#050508;--bg-2:#0a0a10;--bg-3:#111118;--bg-4:#18181f;
-            --border:rgba(255,255,255,0.06);--border-2:rgba(255,255,255,0.12);
-            --text:#f0f0ff;--text-2:#8888aa;--text-3:#44445a;
-            --accent:#6c63ff;--accent-2:#a78bfa;--accent-3:#38bdf8;
-            --green:#22d3a0;--red:#ff5f7e;--yellow:#fbbf24;
-            --font:'DM Sans',sans-serif;--display:'Syne',sans-serif;--mono:'DM Mono',monospace;
-            --radius:16px;--radius-sm:10px;
+            --bg:#030305;--bg-2:#080810;--bg-3:#0d0d18;--bg-4:#12121f;
+            --border:rgba(255,255,255,0.05);--border-2:rgba(255,255,255,0.1);--border-3:rgba(255,255,255,0.15);
+            --text:#f0f0ff;--text-2:#7878a0;--text-3:#3a3a58;
+            --accent:#5b7fff;--accent-2:#a78bfa;--accent-3:#22d3ee;
+            --green:#10d98a;--red:#ff4d6a;--yellow:#fbbf24;
+            --font:'Geist',sans-serif;--mono:'JetBrains Mono',monospace;
+            --r:12px;--r-lg:20px;
         }
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+        body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;cursor:none}
         a{color:inherit;text-decoration:none}
+        button{font-family:var(--font);cursor:none;border:none;background:none}
 
-        body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.4}
-        .grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(108,99,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
-        .orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
-        .orb-1{width:500px;height:500px;background:rgba(108,99,255,0.08);top:-150px;right:-100px}
+        .cursor{width:8px;height:8px;background:var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform 0.1s ease;mix-blend-mode:screen}
+        .cursor-ring{width:32px;height:32px;border:1px solid rgba(91,127,255,0.4);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all 0.15s ease}
 
-        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-        .nav-logo{font-family:var(--display);font-size:22px;font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent-2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .nav-links{display:flex;align-items:center;gap:28px;list-style:none}
-        .nav-links a{font-size:14px;font-weight:500;color:var(--text-2);transition:color 0.2s}
-        .nav-links a:hover,.nav-links a.active{color:var(--text)}
-        .nav-actions{display:flex;align-items:center;gap:12px}
-        .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font);font-weight:500;border-radius:var(--radius-sm);transition:all 0.2s;cursor:pointer;border:none;font-size:14px}
-        .btn-ghost{background:transparent;color:var(--text-2);padding:8px 18px;border:1px solid var(--border)}
-        .btn-ghost:hover{border-color:var(--border-2);color:var(--text)}
-        .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;padding:10px 22px;font-weight:600;box-shadow:0 0 30px rgba(108,99,255,0.25)}
-        .btn-primary:hover{opacity:0.9;transform:translateY(-1px)}
+        .bg-mesh{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+        .mesh-orb{position:absolute;border-radius:50%;filter:blur(100px);animation:orbFloat 20s ease-in-out infinite}
+        .orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(91,127,255,0.07) 0%,transparent 70%);top:-150px;right:-150px}
+        .orb-2{width:350px;height:350px;background:radial-gradient(circle,rgba(34,211,238,0.04) 0%,transparent 70%);bottom:200px;left:-100px;animation-delay:-8s}
+        @keyframes orbFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-25px)}}
+        .dot-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%)}
 
-        .page-header{padding:140px 40px 60px;text-align:center;position:relative;z-index:1}
-        .page-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
-        .page-tag::before{content:'';width:20px;height:1px;background:var(--accent)}
-        .page-title{font-family:var(--display);font-size:clamp(40px,6vw,72px);font-weight:800;letter-spacing:-0.04em;line-height:1.05;margin-bottom:16px}
-        .page-title .accent{background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .page-sub{font-size:17px;color:var(--text-2);max-width:480px;margin:0 auto;line-height:1.65}
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:56px;display:flex;align-items:center;justify-content:space-between;background:rgba(3,3,5,0.7);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--border)}
+        .nav-logo{font-family:var(--font);font-size:15px;font-weight:700;color:var(--text);letter-spacing:-0.02em;display:flex;align-items:center;gap:8px}
+        .nav-logo-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+        .nav-links{display:flex;align-items:center;gap:4px;list-style:none}
+        .nav-links a{font-size:13px;font-weight:400;color:var(--text-2);padding:6px 12px;border-radius:6px;transition:color 0.2s,background 0.2s}
+        .nav-links a:hover,.nav-links a.active{color:var(--text);background:rgba(255,255,255,0.04)}
+        .nav-actions{display:flex;align-items:center;gap:8px}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--font);font-size:13px;font-weight:500;border-radius:8px;transition:all 0.2s;cursor:none;border:none;white-space:nowrap}
+        .btn-ghost{background:transparent;color:var(--text-2);padding:7px 14px;border:1px solid var(--border-2)}
+        .btn-ghost:hover{color:var(--text);border-color:var(--border-3);background:rgba(255,255,255,0.03)}
+        .btn-primary{background:var(--accent);color:white;padding:8px 18px;font-weight:600;position:relative;overflow:hidden}
+        .btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.15) 0%,transparent 50%);opacity:0;transition:opacity 0.2s}
+        .btn-primary:hover::before{opacity:1}
+        .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(91,127,255,0.35)}
 
-        .download-section{padding:40px 40px 80px;max-width:900px;margin:0 auto;position:relative;z-index:1}
+        .page-hero{padding:120px 48px 64px;text-align:center;position:relative;z-index:1}
+        .sec-label{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px}
+        .sec-label::before { display: none; }
+        .page-title{font-size:clamp(32px,5vw,56px);font-weight:800;letter-spacing:-0.04em;line-height:1.08;margin-bottom:14px}
+        .page-sub{font-size:15px;color:var(--text-2);max-width:420px;margin:0 auto;line-height:1.7}
 
-        .download-hero{background:var(--bg-2);border:1px solid var(--border);border-radius:24px;padding:60px;text-align:center;position:relative;overflow:hidden;margin-bottom:32px}
-        .download-hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(108,99,255,0.12),transparent 70%);pointer-events:none}
-        .download-app-icon{width:90px;height:90px;border-radius:22px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 24px;box-shadow:0 20px 60px rgba(108,99,255,0.35)}
-        .download-app-name{font-family:var(--display);font-size:28px;font-weight:800;margin-bottom:6px}
-        .download-version-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,211,160,0.1);border:1px solid rgba(34,211,160,0.2);color:var(--green);border-radius:100px;padding:4px 12px;font-size:12px;font-weight:600;margin-bottom:20px}
-        .download-desc{font-size:15px;color:var(--text-2);max-width:440px;margin:0 auto 36px;line-height:1.65}
+        .download-section{padding:0 48px 100px;max-width:880px;margin:0 auto;position:relative;z-index:1}
 
-        .download-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
-        .download-btn{display:flex;align-items:center;gap:14px;background:var(--bg-3);border:2px solid var(--border-2);border-radius:14px;padding:16px 28px;transition:all 0.25s;min-width:190px}
-        .download-btn:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 16px 48px rgba(108,99,255,0.2)}
-        .download-btn.disabled{opacity:0.4;cursor:not-allowed}
-        .download-btn.disabled:hover{transform:none;border-color:var(--border-2);box-shadow:none}
-        .download-btn-icon{font-size:28px}
-        .download-btn-label{font-size:11px;color:var(--text-3)}
-        .download-btn-os{font-size:16px;font-weight:700}
-        .download-meta{font-size:13px;color:var(--text-3)}
+        /* Main download card */
+        .dl-hero{background:var(--bg-2);border:1px solid var(--border-2);border-radius:24px;padding:52px;text-align:center;position:relative;overflow:hidden;margin-bottom:24px}
+        .dl-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent-3),transparent)}
+        .dl-icon{width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px;box-shadow:0 16px 48px rgba(91,127,255,0.3)}
+        .dl-app-name{font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px}
+        .dl-version-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(16,217,138,0.08);border:1px solid rgba(16,217,138,0.2);color:var(--green);border-radius:100px;padding:4px 12px;font-family:var(--mono);font-size:11px;font-weight:500;margin-bottom:18px}
+        .dl-version-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+        .dl-desc{font-size:14px;color:var(--text-2);max-width:400px;margin:0 auto 28px;line-height:1.65}
+        .dl-btn{display:inline-flex;align-items:center;gap:12px;background:var(--bg-3);border:1px solid var(--border-2);border-radius:10px;padding:12px 20px;transition:all 0.2s;margin-bottom:12px}
+        .dl-btn:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+        .dl-btn-ico{font-size:22px}
+        .dl-btn-label{font-size:10px;color:var(--text-3);font-family:var(--mono);text-align:left}
+        .dl-btn-os{font-size:14px;font-weight:600}
+        .dl-meta{font-family:var(--mono);font-size:11px;color:var(--text-3)}
 
-        .requirements-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
-        .req-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
-        .req-title{font-family:var(--display);font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-        .req-icon{font-size:18px}
-        .req-list{display:flex;flex-direction:column;gap:8px}
-        .req-item{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-2)}
-        .req-item-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);flex-shrink:0}
+        /* Requirements */
+        .req-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:24px}
+        .card-title{font-size:14px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;letter-spacing:-0.01em}
+        .req-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+        .req-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2)}
+        .req-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);flex-shrink:0}
 
-        .setup-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:32px}
-        .setup-title{font-family:var(--display);font-size:18px;font-weight:700;margin-bottom:24px}
-        .setup-steps{display:flex;flex-direction:column;gap:0}
-        .setup-step{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--border)}
-        .setup-step:last-child{border-bottom:none}
-        .setup-step-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;flex-shrink:0;margin-top:2px}
-        .setup-step-content h4{font-size:14px;font-weight:600;margin-bottom:4px}
-        .setup-step-content p{font-size:13px;color:var(--text-2);line-height:1.55}
-        .setup-step-code{background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:var(--mono);font-size:12px;color:var(--accent-3);margin-top:8px;display:inline-block}
+        /* Setup steps */
+        .setup-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:24px}
+        .setup-step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+        .setup-step:last-child{border-bottom:none;padding-bottom:0}
+        .setup-step:first-child{padding-top:0}
+        .step-num{width:26px;height:26px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:white;flex-shrink:0;margin-top:1px}
+        .step-body h4{font-size:13px;font-weight:600;margin-bottom:4px}
+        .step-body p{font-size:13px;color:var(--text-2);line-height:1.6}
+        .step-code{background:var(--bg-4);border:1px solid var(--border);border-radius:6px;padding:7px 11px;font-family:var(--mono);font-size:11px;color:var(--accent-3);margin-top:8px;display:inline-block}
 
-        .changelog-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
-        .changelog-title{font-family:var(--display);font-size:16px;font-weight:700;margin-bottom:20px}
-        .changelog-version{display:flex;align-items:flex-start;gap:16px;padding:12px 0;border-bottom:1px solid var(--border)}
-        .changelog-version:last-child{border-bottom:none;padding-bottom:0}
-        .changelog-badge{background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);color:var(--accent-2);border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;font-family:var(--mono);flex-shrink:0;margin-top:2px}
-        .changelog-badge.latest{background:rgba(34,211,160,0.1);border-color:rgba(34,211,160,0.2);color:var(--green)}
-        .changelog-items{display:flex;flex-direction:column;gap:4px}
-        .changelog-item{font-size:13px;color:var(--text-2)}
-        .changelog-item::before{content:'→ ';color:var(--accent);font-weight:600}
+        /* Changelog */
+        .changelog-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r);padding:24px}
+        .cl-item{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+        .cl-item:last-child{border-bottom:none;padding-bottom:0}
+        .cl-item:first-child{padding-top:0}
+        .cl-badge{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;flex-shrink:0;margin-top:2px}
+        .cl-badge.latest{background:rgba(16,217,138,0.1);border:1px solid rgba(16,217,138,0.2);color:var(--green)}
+        .cl-badge.old{background:var(--bg-4);border:1px solid var(--border-2);color:var(--text-3)}
+        .cl-entries{display:flex;flex-direction:column;gap:4px}
+        .cl-entry{font-size:12.5px;color:var(--text-2);display:flex;align-items:baseline;gap:6px}
+        .cl-entry::before{content:'→';color:var(--accent);font-size:11px;flex-shrink:0}
 
-        footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:48px 40px 32px;text-align:center}
-        .footer-logo{font-family:var(--display);font-size:20px;font-weight:800;background:linear-gradient(135deg,#fff,var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px}
-        .footer-links-row{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:24px}
-        .footer-links-row a{font-size:13.5px;color:var(--text-2);transition:color 0.2s}
-        .footer-links-row a:hover{color:var(--text)}
-        .footer-copy{font-size:13px;color:var(--text-3)}
+        footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:40px 48px 28px}
+        .footer-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+        .footer-brand{font-family:var(--font);font-size:14px;font-weight:700}
+        .footer-links{display:flex;align-items:center;gap:20px}
+        .footer-links a{font-size:12px;color:var(--text-3);transition:color 0.15s}
+        .footer-links a:hover{color:var(--text-2)}
+        .footer-copy{font-family:var(--mono);font-size:11px;color:var(--text-3)}
 
-        ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--bg-4);border-radius:2px}
-        @media(max-width:768px){nav{padding:0 20px}.nav-links{display:none}.page-header{padding:100px 20px 50px}.download-section{padding:20px 20px 60px}.requirements-grid{grid-template-columns:1fr}.download-hero{padding:40px 24px}}
+        ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--bg-4)}
+        @media(max-width:768px){body{cursor:auto}.cursor,.cursor-ring{display:none}nav{padding:0 20px}.nav-links{display:none}.page-hero{padding:88px 20px 48px}.download-section{padding:0 20px 72px}.dl-hero{padding:36px 20px}.req-grid{grid-template-columns:1fr}.footer-inner{flex-direction:column;gap:16px;text-align:center}}
     </style>
 </head>
 <body>
 
-<div class="grid-bg"></div>
-<div class="orb orb-1"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="bg-mesh"><div class="mesh-orb orb-1"></div><div class="mesh-orb orb-2"></div></div>
+<div class="dot-grid"></div>
 
 <nav>
-    <a href="{{ route('home') }}" class="nav-logo">Tunara</a>
+    <a href="{{ route('home') }}" class="nav-logo">
+        <div class="nav-logo-dot"></div>
+        Tunara
+    </a>
     <ul class="nav-links">
         <li><a href="{{ route('home') }}">Home</a></li>
-        <li><a href="{{ route('home') }}#how-it-works">How it Works</a></li>
+        <li><a href="{{ route('home') }}#how-it-works">How it works</a></li>
         <li><a href="{{ route('home') }}#features">Features</a></li>
         <li><a href="{{ route('pricing') }}">Pricing</a></li>
         <li><a href="{{ route('download') }}" class="active">Download</a></li>
@@ -120,114 +134,106 @@
         <a href="{{ route('dashboard') }}" class="btn btn-primary">Dashboard →</a>
         @else
         <a href="{{ route('login') }}" class="btn btn-ghost">Sign in</a>
-        <a href="{{ route('register') }}" class="btn btn-primary">Get Started</a>
+        <a href="{{ route('register') }}" class="btn btn-primary">Get started</a>
         @endauth
     </div>
 </nav>
 
-<div class="page-header">
-    <div class="page-tag">Download</div>
-    <h1 class="page-title">Get the <span class="accent">Desktop App</span></h1>
-    <p class="page-sub">The Tunara desktop app connects your local server to the relay. Lightweight, fast, and always ready.</p>
+<div class="page-hero">
+    <div class="sec-label">download</div>
+    <h1 class="page-title">Get the Desktop App</h1>
+    <p class="page-sub">The bridge between your local server and the internet. Lightweight and always ready.</p>
 </div>
 
 <div class="download-section">
 
-    <!-- Main Download Card -->
-    <div class="download-hero">
-        <div class="download-app-icon">🚀</div>
-        <div class="download-app-name">Tunara Desktop</div>
-        <div class="download-version-badge">
-            <span>●</span> v1.0.0 — Latest
+    <div class="dl-hero">
+        <div class="dl-icon">🚀</div>
+        <div class="dl-app-name">Tunara Desktop</div>
+        <div class="dl-version-badge">
+            <span class="dl-version-dot"></span>
+            v1.0.0 — Latest release
         </div>
-        <div class="download-desc">
-            The official Tunara desktop application. Required to activate your tunnels and connect your local server to the internet.
-        </div>
-
-        <div class="download-btns">
-            <a href="https://github.com/mohitsolanki7051/tunara-app/releases/download/v1.0.0/Tunara.Setup.1.0.0.exe" class="download-btn">
-                <div class="download-btn-icon">🪟</div>
+        <div class="dl-desc">The official desktop app. Required to activate your tunnels and connect your local server to the internet.</div>
+        <div>
+            <a href="https://github.com/mohitsolanki7051/tunara-app/releases/download/v1.0.0/Tunara.Setup.1.0.0.exe" class="dl-btn">
+                <div class="dl-btn-ico">🪟</div>
                 <div>
-                    <div class="download-btn-label">Download for</div>
-                    <div class="download-btn-os">Windows</div>
+                    <div class="dl-btn-label">Download for</div>
+                    <div class="dl-btn-os">Windows</div>
                 </div>
             </a>
         </div>
-
-        <div class="download-meta">Windows 10 / 11 · 64-bit · ~80MB installer</div>
+        <div class="dl-meta">Windows 10/11 · 64-bit · ~80MB</div>
     </div>
 
-    <!-- System Requirements -->
-    <div class="requirements-grid">
-        <div class="req-card">
-            <div class="req-title"><span class="req-icon">🪟</span> Windows Requirements</div>
-            <div class="req-list">
-                <div class="req-item"><span class="req-item-dot"></span>Windows 10 or Windows 11</div>
-                <div class="req-item"><span class="req-item-dot"></span>64-bit processor (x64)</div>
-                <div class="req-item"><span class="req-item-dot"></span>4GB RAM minimum</div>
-                <div class="req-item"><span class="req-item-dot"></span>Internet connection required</div>
-                <div class="req-item"><span class="req-item-dot"></span>Administrator rights for install</div>
-            </div>
+    <!-- Requirements -->
+    <div class="req-card">
+        <div class="card-title">🪟 System Requirements</div>
+        <div class="req-grid">
+            <div class="req-item"><span class="req-dot"></span>Windows 10 or Windows 11</div>
+            <div class="req-item"><span class="req-dot"></span>64-bit processor (x64)</div>
+            <div class="req-item"><span class="req-dot"></span>4GB RAM minimum</div>
+            <div class="req-item"><span class="req-dot"></span>Active internet connection</div>
+            <div class="req-item"><span class="req-dot"></span>Admin rights for install</div>
+            <div class="req-item"><span class="req-dot"></span>Tunara account required</div>
         </div>
-
     </div>
 
     <!-- Setup Guide -->
     <div class="setup-card">
-        <div class="setup-title">Installation & Setup Guide</div>
-        <div class="setup-steps">
-            <div class="setup-step">
-                <div class="setup-step-num">1</div>
-                <div class="setup-step-content">
-                    <h4>Create your Tunara account</h4>
-                    <p>Sign up for free at tunara.dev. Your account comes with a unique auth token.</p>
-                </div>
+        <div class="card-title">Installation Guide</div>
+        <div class="setup-step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+                <h4>Create your Tunara account</h4>
+                <p>Sign up free at tunara.online. Your account comes with a unique auth token.</p>
             </div>
-            <div class="setup-step">
-                <div class="setup-step-num">2</div>
-                <div class="setup-step-content">
-                    <h4>Download and install the app</h4>
-                    <p>Download the Windows installer above. Run it as Administrator. Installation takes less than a minute.</p>
-                    <div class="setup-step-code">Run as Administrator → Follow installer prompts → Done</div>
-                </div>
+        </div>
+        <div class="setup-step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+                <h4>Download and install the app</h4>
+                <p>Download the Windows installer above. Run as Administrator — installation takes under a minute.</p>
+                <span class="step-code">Run as Administrator → Follow prompts → Done</span>
             </div>
-            <div class="setup-step">
-                <div class="setup-step-num">3</div>
-                <div class="setup-step-content">
-                    <h4>Create a tunnel from your dashboard</h4>
-                    <p>Log in to your Tunara dashboard. Create a new tunnel with your local URL (e.g. http://localhost:8000).</p>
-                </div>
+        </div>
+        <div class="setup-step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+                <h4>Create a tunnel from your dashboard</h4>
+                <p>Log in to tunara.online. Click "New Tunnel" and enter your local URL (e.g. http://localhost:8000).</p>
             </div>
-            <div class="setup-step">
-                <div class="setup-step-num">4</div>
-                <div class="setup-step-content">
-                    <h4>Click "Open in App" — it auto-fills everything</h4>
-                    <p>From the dashboard, click "Open in App." Your auth token and tunnel ID auto-fill in the desktop app. No copy-pasting needed.</p>
-                </div>
+        </div>
+        <div class="setup-step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+                <h4>Click "Open in App" — everything auto-fills</h4>
+                <p>From the dashboard, click "Open in App." Your auth token and tunnel ID auto-fill in the desktop app. No copy-pasting needed.</p>
             </div>
-            <div class="setup-step">
-                <div class="setup-step-num">5</div>
-                <div class="setup-step-content">
-                    <h4>Enter your local port and click Start Tunnel</h4>
-                    <p>Enter the port your local server is running on (default: 8000). Click Start Tunnel. Your project is now accessible from anywhere.</p>
-                    <div class="setup-step-code">Port: 8000 → Start Tunnel → ✓ Connected</div>
-                </div>
+        </div>
+        <div class="setup-step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+                <h4>Click Start Tunnel — you're live</h4>
+                <p>Enter your local port and click Start Tunnel. Your project is now accessible from anywhere in the world.</p>
+                <span class="step-code">Port: 8000 → Start Tunnel → ✓ Connected</span>
             </div>
         </div>
     </div>
 
     <!-- Changelog -->
     <div class="changelog-card">
-        <div class="changelog-title">Release Notes</div>
-        <div class="changelog-version">
-            <div class="changelog-badge latest">v1.0.0</div>
-            <div class="changelog-items">
-                <div class="changelog-item">Initial release of Tunara Desktop</div>
-                <div class="changelog-item">Secure WebSocket tunnel relay support</div>
-                <div class="changelog-item">Deep link auto-fill from dashboard</div>
-                <div class="changelog-item">Real-time request logs (GET, POST, PUT, DELETE)</div>
-                <div class="changelog-item">Token-based authentication</div>
-                <div class="changelog-item">Custom title bar with minimize/close controls</div>
+        <div class="card-title">Release Notes</div>
+        <div class="cl-item">
+            <div class="cl-badge latest">v1.0.0</div>
+            <div class="cl-entries">
+                <div class="cl-entry">Initial release of Tunara Desktop</div>
+                <div class="cl-entry">Secure WebSocket tunnel relay support</div>
+                <div class="cl-entry">Deep link auto-fill from dashboard</div>
+                <div class="cl-entry">Real-time request logs (GET, POST, PUT, DELETE)</div>
+                <div class="cl-entry">Token-based authentication</div>
+                <div class="cl-entry">Custom title bar with minimize/close controls</div>
             </div>
         </div>
     </div>
@@ -235,17 +241,30 @@
 </div>
 
 <footer>
-    <div class="footer-logo">Tunara</div>
-    <div class="footer-links-row">
-        <a href="{{ route('home') }}">Home</a>
-        <a href="{{ route('home') }}#features">Features</a>
-        <a href="{{ route('pricing') }}">Pricing</a>
-        <a href="{{ route('download') }}">Download</a>
-        <a href="{{ route('login') }}">Sign In</a>
-        <a href="{{ route('register') }}">Sign Up</a>
+    <div class="footer-inner">
+        <div class="footer-brand">Tunara</div>
+        <div class="footer-links">
+            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route('home') }}#features">Features</a>
+            <a href="{{ route('pricing') }}">Pricing</a>
+            <a href="{{ route('download') }}">Download</a>
+            <a href="{{ route('login') }}">Sign in</a>
+        </div>
+        <div class="footer-copy">© {{ date('Y') }} Tunara</div>
     </div>
-    <div class="footer-copy">© {{ date('Y') }} Tunara. All rights reserved.</div>
 </footer>
 
+<script>
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-4+'px';cursor.style.top=my-4+'px'});
+function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx-16+'px';ring.style.top=ry-16+'px';requestAnimationFrame(animRing)}
+animRing();
+document.querySelectorAll('a,button').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)';ring.style.transform='scale(1.5)';ring.style.borderColor='rgba(91,127,255,0.6)'});
+    el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';ring.style.transform='scale(1)';ring.style.borderColor='rgba(91,127,255,0.4)'});
+});
+</script>
 </body>
 </html>
