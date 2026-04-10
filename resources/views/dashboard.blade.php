@@ -242,7 +242,7 @@
                 <div class="tunnel-local">{{ $tunnel->local_url }}</div>
             </div>
             <div class="tunnel-actions">
-                <a href="tunara://connect?token={{ $token->token }}&tunnelId={{ $tunnel->tunnel_id }}" class="open-app-btn" onclick="setTimeout(closeAppModal, 800)">
+                <a href="tunara://connect?token={{ $token->token }}&tunnelId={{ $tunnel->tunnel_id }}&port={{ parse_url($tunnel->local_url, PHP_URL_PORT) ?? 8000 }}" class="open-app-btn" onclick="setTimeout(closeAppModal, 800)">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                     Open in App
                 </a>
@@ -413,10 +413,10 @@
         document.getElementById('create-modal').classList.remove('open');
     }
 
-    function openAppModal(url, tunnelId) {
+    function openAppModal(url, tunnelId, port) {
         currentPublicUrl = url;
         document.getElementById('app-modal-url').textContent = url;
-        document.getElementById('app-modal-deeplink').href = `tunara://connect?token=${TOKEN}&tunnelId=${tunnelId}`;
+        document.getElementById('app-modal-deeplink').href = `tunara://connect?token=${TOKEN}&tunnelId=${tunnelId}&port=${port}`;
         document.getElementById('app-modal').classList.add('open');
     }
     function closeAppModal() {
@@ -598,8 +598,8 @@
             const data = await res.json();
             if (data.success) {
                 closeCreateModal();
-                addTunnelRow(data.tunnel_id, localUrl, data.public_url);
-                openAppModal(data.public_url, data.tunnel_id);
+                addTunnelRow(data.tunnel_id, localUrl, data.public_url, data.port);
+                openAppModal(data.public_url, data.tunnel_id, data.port);
 
                 // Total count update karo
                 const totalEl = document.getElementById('total-count');
@@ -637,7 +637,7 @@
         }
     }
 
-    function addTunnelRow(tunnelId, localUrl, publicUrl) {
+    function addTunnelRow(tunnelId, localUrl, publicUrl, port) {
         const empty = document.querySelector('.empty-state');
         if (empty) empty.remove();
         let list = document.getElementById('tunnels-list');
@@ -646,7 +646,7 @@
             list.id = 'tunnels-list';
             document.querySelector('.tunnels-card').insertBefore(list, document.getElementById('pagination'));
         }
-        const deepLink = `tunara://connect?token=${TOKEN}&tunnelId=${tunnelId}`;
+        const deepLink = `tunara://connect?token=${TOKEN}&tunnelId=${tunnelId}&port=${port}`;
         const row = document.createElement('div');
         row.className = 'tunnel-row';
         row.id = `tunnel-row-${tunnelId}`;

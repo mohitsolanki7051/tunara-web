@@ -77,13 +77,14 @@ class TunnelController extends Controller
             'is_protected' => $isProtected,
             'password'     => $password,
         ]);
-
+        $port = parse_url($request->local_url, PHP_URL_PORT) ?? 8000;
         return response()->json([
             'success'      => true,
             'tunnel_id'    => $tunnel->tunnel_id,
             'public_url'   => env('CLOUDFLARE_WORKER_URL') . '/t/' . $tunnel->tunnel_id,
             'token'        => $token->token,
             'is_protected' => $isProtected,
+            'port'         => $port,
         ]);
     }
 
