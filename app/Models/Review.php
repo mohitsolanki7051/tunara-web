@@ -16,6 +16,8 @@ class Review extends Model
         'text',
         'is_approved',
         'show_on_landing',
+        'ip',
+         'submitted_at',
     ];
 
     protected $casts = [

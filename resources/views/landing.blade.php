@@ -506,6 +506,9 @@
 
         <form method="POST" action="{{ route('review.submit') }}">
             @csrf
+            <div style="display:none;position:absolute;left:-9999px;" aria-hidden="true">
+                <input type="text" name="website" value="" tabindex="-1" autocomplete="off">
+            </div>
             <!-- Star Rating -->
             <div style="margin-bottom:16px;">
                 <label style="font-size:12px;font-weight:500;color:var(--text-2);margin-bottom:8px;display:block;">Rating</label>
