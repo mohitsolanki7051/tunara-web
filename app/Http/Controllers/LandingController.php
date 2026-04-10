@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\PlanSetting;
-
+use App\Models\Review;
 class LandingController extends Controller
 {
     public function index()
     {
         $free = PlanSetting::where('plan', 'free')->first();
         $pro  = PlanSetting::where('plan', 'pro')->first();
-        return view('landing', compact('free', 'pro'));
+        $reviews = Review::where('is_approved', true)
+                ->where('show_on_landing', true)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        return view('landing', compact('free', 'pro','reviews'));
     }
 
     public function pricing()

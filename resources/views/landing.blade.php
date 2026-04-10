@@ -462,10 +462,92 @@
         <div class="sec-label" style="justify-content:center">testimonials</div>
         <h2 class="sec-title">Loved by developers</h2>
     </div>
+
+    <!-- Dynamic Reviews -->
+    @if($reviews->count() > 0)
+    <div class="testi-grid">
+        @foreach($reviews as $review)
+        <div class="testi-card" data-anim>
+            <div class="testi-stars">{{ str_repeat('★', $review->rating) }}{{ str_repeat('☆', 5 - $review->rating) }}</div>
+            <div class="testi-text">"{{ $review->text }}"</div>
+            <div class="testi-author">
+                <div class="testi-avatar">{{ strtoupper(substr($review->name, 0, 1)) }}</div>
+                <div>
+                    <div class="testi-name">{{ $review->name }}</div>
+                    @if($review->role)<div class="testi-role">{{ $review->role }}</div>@endif
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+    @else
+    <!-- Static fallback jab koi review nahi -->
     <div class="testi-grid">
         <div class="testi-card" data-anim><div class="testi-stars">★★★★★</div><div class="testi-text">"Finally an ngrok alternative that works great in India. Setup under a minute and my client saw my project instantly."</div><div class="testi-author"><div class="testi-avatar">R</div><div><div class="testi-name">Rahul Sharma</div><div class="testi-role">freelance dev</div></div></div></div>
         <div class="testi-card" data-anim><div class="testi-stars">★★★★★</div><div class="testi-text">"The deep link feature is brilliant — one click from the dashboard and everything auto-fills. Saves so much time during demos."</div><div class="testi-author"><div class="testi-avatar">P</div><div><div class="testi-name">Priya Nair</div><div class="testi-role">fullstack dev</div></div></div></div>
         <div class="testi-card" data-anim><div class="testi-stars">★★★★★</div><div class="testi-text">"Real-time logs help us debug issues that only appear in the client's browser. Incredibly useful for demos."</div><div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Arjun Mehta</div><div class="testi-role">tech lead</div></div></div></div>
+    </div>
+    @endif
+
+    <!-- Review Submit Form -->
+    <div style="max-width:540px;margin:48px auto 0;background:var(--bg-2);border:1px solid var(--border-2);border-radius:var(--r-lg);padding:32px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);"></div>
+        <div style="text-align:center;margin-bottom:24px;">
+            <div style="font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">Share your experience</div>
+            <h3 style="font-size:18px;font-weight:700;letter-spacing:-0.02em;">Leave a review</h3>
+            <p style="font-size:13px;color:var(--text-2);margin-top:6px;">Your feedback helps other developers discover Tunara</p>
+        </div>
+
+        @if(session('review_success'))
+        <div style="background:rgba(16,217,138,0.08);border:1px solid rgba(16,217,138,0.2);border-radius:8px;padding:14px 16px;text-align:center;margin-bottom:16px;">
+            <p style="font-size:13px;color:#10d98a;">{{ session('review_success') }}</p>
+        </div>
+        @endif
+
+        <form method="POST" action="{{ route('review.submit') }}">
+            @csrf
+            <!-- Star Rating -->
+            <div style="margin-bottom:16px;">
+                <label style="font-size:12px;font-weight:500;color:var(--text-2);margin-bottom:8px;display:block;">Rating</label>
+                <div style="display:flex;gap:6px;" id="star-container">
+                    @for($i=1;$i<=5;$i++)
+                    <button type="button" onclick="setRating({{ $i }})" id="star-{{ $i }}"
+                        style="font-size:22px;color:var(--text-3);background:none;border:none;cursor:pointer;transition:color 0.15s;padding:0;">★</button>
+                    @endfor
+                </div>
+                <input type="hidden" name="rating" id="rating-input" value="5">
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                <div>
+                    <label style="font-size:12px;font-weight:500;color:var(--text-2);margin-bottom:6px;display:block;">Your name *</label>
+                    <input type="text" name="name" required placeholder="John Doe" value="{{ old('name') }}"
+                        style="width:100%;background:var(--bg-3);border:1px solid var(--border-2);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:var(--font);"
+                        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                </div>
+                <div>
+                    <label style="font-size:12px;font-weight:500;color:var(--text-2);margin-bottom:6px;display:block;">Role / Title</label>
+                    <input type="text" name="role" placeholder="e.g. Freelance Dev" value="{{ old('role') }}"
+                        style="width:100%;background:var(--bg-3);border:1px solid var(--border-2);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:var(--font);"
+                        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                </div>
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label style="font-size:12px;font-weight:500;color:var(--text-2);margin-bottom:6px;display:block;">Your review *</label>
+                <textarea name="text" required rows="3" placeholder="Share your experience with Tunara..." maxlength="500"
+                    style="width:100%;background:var(--bg-3);border:1px solid var(--border-2);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:var(--font);resize:vertical;"
+                    onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">{{ old('text') }}</textarea>
+                @error('text')<span style="font-size:11px;color:#ff4d6a;">{{ $message }}</span>@enderror
+            </div>
+
+            <button type="submit"
+                style="width:100%;padding:11px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.2s;"
+                onmouseover="this.style.opacity='0.9';this.style.transform='translateY(-1px)'"
+                onmouseout="this.style.opacity='1';this.style.transform='translateY(0)'">
+                Submit Review
+            </button>
+        </form>
     </div>
 </section>
 
@@ -571,6 +653,14 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); history.pushState(null, '', window.location.pathname); }
     });
 });
+
+function setRating(val) {
+    document.getElementById('rating-input').value = val;
+    for(let i=1;i<=5;i++) {
+        document.getElementById('star-'+i).style.color = i <= val ? '#fbbf24' : 'var(--text-3)';
+    }
+}
+setRating(5); // Default 5 stars
 </script>
 </body>
 </html>

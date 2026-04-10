@@ -5,6 +5,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TunnelController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Admin\ReviewAdminController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\PlanSettingController;
@@ -15,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::get('/pricing', [LandingController::class, 'pricing'])->name('pricing');
 Route::get('/download', [LandingController::class, 'download'])->name('download');
+Route::post('/review/submit', [ReviewController::class, 'submit'])->name('review.submit');
 // User Auth Routes
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -52,5 +55,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
         Route::get('/settings', [PlanSettingController::class, 'index'])->name('settings');
         Route::post('/settings', [PlanSettingController::class, 'update'])->name('settings.update');
+        Route::get('/reviews', [ReviewAdminController::class, 'index'])->name('reviews');
+        Route::post('/reviews/{id}/approve', [ReviewAdminController::class, 'approve'])->name('reviews.approve');
+        Route::post('/reviews/{id}/reject', [ReviewAdminController::class, 'reject'])->name('reviews.reject');
+        Route::post('/reviews/{id}/toggle-landing', [ReviewAdminController::class, 'toggleLanding'])->name('reviews.toggle');
     });
 });
