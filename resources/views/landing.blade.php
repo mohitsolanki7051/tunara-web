@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tunara — Instant Localhost Tunneling</title>
-    <meta name="description" content="Expose your local server to the internet in seconds. Secure, fast, developer-first tunneling.">
+    <link rel="canonical" href="https://www.tunara.online/">
+    <title>Tunara – Developer Tools Platform</title>
+    <meta name="description" content="Tunara helps developers build, manage and deploy applications efficiently with a secure platform.">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -276,12 +277,12 @@
     </div>
 
     <h1 class="hero-headline">
-        Expose localhost to the<br>
-        internet <span class="hl-blue">in seconds</span>
+        Build and share your<br>
+        applications <span class="hl-blue">instantly</span>
     </h1>
 
     <p class="hero-sub">
-        Tunara creates a secure public URL for your local dev server. Share with clients, teammates, or anyone — without touching your router.
+        Tunara creates a secure platform to share and test your applications. Share with clients, teammates, or anyone — without touching your router.
     </p>
 
     <div class="hero-cta">
@@ -321,8 +322,8 @@
             <div class="tl-ok">✓ tunnel registered</div>
             <div class="tl-ok">✓ websocket ready</div>
             <br>
-            <div>public  → <span class="tl-url">https://tunara.online/t/a8f2k9m1</span></div>
-            <div class="tl-dim">local   → <span style="color:var(--text-2)">http://localhost:8000</span></div>
+            <div>public  → <span class="tl-url">https://tunnel.tunara.online/t/a8f2k9m1</span></div>
+            <div class="tl-dim">local   → <span style="color:var(--text-2)">your development server</span></div>
             <br>
             <div class="tl-dim">────────────────────────────────</div>
             <div><span class="tl-method">GET</span>  <span class="tl-path">/</span>                <span class="tl-status">200</span>  <span class="tl-ms">18ms</span></div>
@@ -338,7 +339,7 @@
     <div class="stat-item"><div class="stat-num">HTTPS</div><div class="stat-label">secure by default</div></div>
     <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">no card needed</div></div>
     <div class="stat-item"><div class="stat-num">Any</div><div class="stat-label">framework supported</div></div>
-    <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">viewers per tunnel</div></div>
+    <div class="stat-item"><div class="stat-num">Scalable viewers</div><div class="stat-label">viewers per tunnel</div></div>
 </div>
 
 <section id="how-it-works" class="how-section">
@@ -586,7 +587,7 @@
         <div class="footer-grid">
             <div>
                 <div class="footer-brand">tunara</div>
-                <div class="footer-brand-desc">Simple, secure localhost tunneling for developers. Share your local project with the world.</div>
+                <div class="footer-brand-desc">Simple, secure platform for sharing local applications. Share your local project with the world.</div>
             </div>
             <div>
                 <div class="footer-col-title">Product</div>
@@ -620,6 +621,7 @@
         </div>
         <div class="footer-bottom">
             <span>© {{ date('Y') }} tunara. all rights reserved.</span>
+            <span>www.tunara.online</span>
             <span>made with ❤️ for developers</span>
         </div>
     </div>
