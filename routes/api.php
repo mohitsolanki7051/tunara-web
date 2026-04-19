@@ -12,6 +12,7 @@ Route::post('/verify-token', function (Request $request) {
 });
 Route::post('/request/log', [RequestLogController::class, 'log']);
 Route::get('/request/check/{tunnelId}', [RequestLogController::class, 'check']);
+Route::get('/analytics/summary', [RequestLogController::class, 'summary'])->middleware('auth:sanctum');
 
 // Password verify
 Route::post('/tunnel/verify-password', function (Request $request) {

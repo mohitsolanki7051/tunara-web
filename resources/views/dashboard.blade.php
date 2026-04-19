@@ -42,6 +42,36 @@
     .icon-btn { color: var(--text-3); transition: color 0.15s; padding: 2px; flex-shrink: 0; background: none; border: none; cursor: pointer; }
     .icon-btn:hover { color: var(--text); }
     .icon-btn svg { width: 15px; height: 15px; display: block; }
+    /* ── Analytics ── */
+.analytics-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+.analytics-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.analytics-header h2 { font-size: 14px; font-weight: 600; }
+.analytics-date { font-size: 12px; color: var(--text-3); }
+
+.analytics-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+.analytics-stat { background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; }
+.analytics-stat-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.analytics-stat-label { font-size: 12px; color: var(--text-2); }
+.analytics-stat-value { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+.analytics-stat-sub { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+
+.an-progress-wrap { margin-top: 4px; }
+.an-progress-track { height: 6px; background: var(--bg-4); border-radius: 99px; overflow: hidden; }
+.an-progress-bar { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width 0.6s ease; }
+.an-progress-bar.danger { background: linear-gradient(90deg, #f97316, var(--red)); }
+
+.an-chart { display: flex; align-items: flex-end; gap: 8px; height: 80px; }
+.an-chart-loading { font-size: 13px; color: var(--text-3); }
+.an-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+.an-bar { width: 100%; border-radius: 4px 4px 0 0; background: linear-gradient(180deg, var(--accent), rgba(91,127,255,0.4)); min-height: 4px; transition: height 0.4s ease; }
+.an-bar.today { background: linear-gradient(180deg, var(--accent-2), rgba(167,139,250,0.5)); }
+.an-bar-count { font-size: 10px; color: var(--text-3); }
+.an-bar-day { font-size: 10px; color: var(--text-3); }
+
+.an-tunnel-row { display: flex; align-items: center; justify-content: space-between; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 8px; }
+.an-tunnel-row:last-child { margin-bottom: 0; }
+.an-tunnel-url { font-family: var(--mono); font-size: 12px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.an-tunnel-count { font-size: 13px; font-weight: 600; color: var(--accent); margin-left: 16px; flex-shrink: 0; }
 
     .tunnels-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
     .tunnels-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
@@ -261,6 +291,73 @@
     <div class="pagination" id="pagination" style="display:none;">
         <span class="pagination-info" id="pagination-info"></span>
         <div class="pagination-btns" id="pagination-btns"></div>
+    </div>
+</div>
+
+{{-- ANALYTICS SECTION --}}
+<div class="analytics-card" id="analytics-section" style="margin-top:24px;">
+    <div class="analytics-header">
+        <h2>Analytics</h2>
+        <span class="analytics-date" id="analytics-date"></span>
+    </div>
+
+    {{-- Stats Row --}}
+    <div class="analytics-stats">
+        <div class="analytics-stat">
+            <div class="analytics-stat-top">
+                <span class="analytics-stat-label">Today's Requests</span>
+                <div class="stat-icon stat-icon-blue">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                </div>
+            </div>
+            <div class="analytics-stat-value" id="an-today">—</div>
+            <div class="analytics-stat-sub">requests served today</div>
+        </div>
+        <div class="analytics-stat">
+            <div class="analytics-stat-top">
+                <span class="analytics-stat-label">Remaining</span>
+                <div class="stat-icon stat-icon-green">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+            </div>
+            <div class="analytics-stat-value" id="an-remaining">—</div>
+            <div class="analytics-stat-sub" id="an-limit-sub">of daily limit</div>
+        </div>
+        <div class="analytics-stat">
+            <div class="analytics-stat-top">
+                <span class="analytics-stat-label">Daily Limit</span>
+                <div class="stat-icon stat-icon-purple">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <div class="analytics-stat-value" id="an-limit">—</div>
+            <div class="analytics-stat-sub">resets at midnight</div>
+        </div>
+    </div>
+
+    {{-- Progress Bar --}}
+    <div class="an-progress-wrap" id="an-progress-wrap" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:12px;color:var(--text-3);">Daily usage</span>
+            <span style="font-size:12px;color:var(--text-2);" id="an-progress-label"></span>
+        </div>
+        <div class="an-progress-track">
+            <div class="an-progress-bar" id="an-progress-bar"></div>
+        </div>
+    </div>
+
+    {{-- Weekly Chart --}}
+    <div style="margin-top:22px;">
+        <p style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px;">Last 7 Days</p>
+        <div class="an-chart" id="an-chart">
+            <div class="an-chart-loading">Loading chart...</div>
+        </div>
+    </div>
+
+    {{-- Per Tunnel --}}
+    <div style="margin-top:22px;">
+        <p style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:12px;">Per Tunnel (Today)</p>
+        <div id="an-per-tunnel"></div>
     </div>
 </div>
 
@@ -738,5 +835,77 @@
         setInterval(checkActiveTunnels, 10000);
         refreshPagination();
     });
+    // ── Analytics ──
+async function loadAnalytics() {
+    try {
+        const res = await fetch('/api/analytics/summary', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+        });
+        if (!res.ok) return;
+        const d = await res.json();
+
+        // Date
+        const now = new Date();
+        document.getElementById('analytics-date').textContent =
+            now.toLocaleDateString('en', { weekday: 'long', month: 'short', day: 'numeric' });
+
+        // Stats
+        document.getElementById('an-today').textContent = d.today_total ?? 0;
+        document.getElementById('an-remaining').textContent = d.remaining === null ? '∞' : d.remaining;
+        document.getElementById('an-limit').textContent = d.max_requests === null ? 'Unlimited' : d.max_requests;
+        document.getElementById('an-limit-sub').textContent = d.max_requests === null ? 'Pro — unlimited' : 'of daily limit';
+
+        // Progress bar (sirf agar limit ho)
+        if (d.max_requests !== null) {
+            const pct = Math.min(100, Math.round((d.today_total / d.max_requests) * 100));
+            const wrap = document.getElementById('an-progress-wrap');
+            const bar  = document.getElementById('an-progress-bar');
+            if (wrap) wrap.style.display = 'block';
+            if (bar) {
+                bar.style.width = pct + '%';
+                if (pct >= 85) bar.classList.add('danger');
+            }
+            document.getElementById('an-progress-label').textContent = pct + '% used';
+        }
+
+        // Weekly chart
+        const chart = document.getElementById('an-chart');
+        const dates  = Object.keys(d.weekly);
+        const counts = Object.values(d.weekly);
+        const maxVal = Math.max(...counts, 1);
+        const todayStr = new Date().toISOString().split('T')[0];
+        chart.innerHTML = dates.map((date, i) => {
+            const h    = Math.max(4, Math.round((counts[i] / maxVal) * 72));
+            const day  = new Date(date).toLocaleDateString('en', { weekday: 'short' });
+            const isToday = date === todayStr;
+            return `<div class="an-bar-wrap">
+                <span class="an-bar-count">${counts[i]}</span>
+                <div class="an-bar${isToday ? ' today' : ''}" style="height:${h}px"></div>
+                <span class="an-bar-day" style="color:${isToday ? 'var(--accent-2)' : ''}">${isToday ? 'Today' : day}</span>
+            </div>`;
+        }).join('');
+
+        // Per tunnel
+        const pt = document.getElementById('an-per-tunnel');
+        if (d.per_tunnel && d.per_tunnel.length > 0) {
+            pt.innerHTML = d.per_tunnel.map(t => `
+                <div class="an-tunnel-row">
+                    <span class="an-tunnel-url">${t.local_url}</span>
+                    <span class="an-tunnel-count">${t.today} req</span>
+                </div>
+            `).join('');
+        } else {
+            pt.innerHTML = '<p style="font-size:13px;color:var(--text-3);">No tunnel activity today.</p>';
+        }
+
+    } catch(e) {
+        console.log('Analytics load failed:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadAnalytics();
+    setInterval(loadAnalytics, 30000); // har 30 sec refresh
+});
 </script>
 @endsection
