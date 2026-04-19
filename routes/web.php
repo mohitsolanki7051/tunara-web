@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TunnelController;
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ReviewController;
@@ -32,6 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/tunnel/register', [TunnelController::class, 'register'])->name('tunnel.register');
     Route::delete('/tunnel/{id}', [TunnelController::class, 'destroy'])->name('tunnel.destroy');
+
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->middleware('auth')->name('analytics');
 
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');
