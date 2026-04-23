@@ -154,7 +154,7 @@
         .price-card.pro::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), transparent); }
         .price-badge { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--accent); background: rgba(91,127,255,0.1); border: 1px solid rgba(91,127,255,0.2); padding: 3px 10px; border-radius: 100px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 18px; }
         .price-plan { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--text-3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
-        .price-amount { font-size: 44px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; margin-bottom: 6px; }
+        .price-amount { font-size: 44px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
         .price-amount sup { font-size: 18px; font-weight: 500; vertical-align: super; }
         .price-period { font-size: 13px; color: var(--text-3); font-weight: 400; }
         .price-desc { font-size: 13px; color: var(--text-2); margin-bottom: 20px; line-height: 1.6; margin-top: 8px; }
@@ -452,7 +452,7 @@
                 <div class="pf {{ $pro->has_password_protection ? '' : 'muted' }}"><svg class="pf-icon {{ $pro->has_password_protection ? 'on' : 'off' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">@if($pro->has_password_protection)<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>@else<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>@endif</svg>Password protection</div>
                 <div class="pf"><svg class="pf-icon on" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Priority support</div>
             </div>
-            <a href="{{ route('register') }}" class="price-btn fill">Upgrade to Pro</a>
+            <button type="button" class="price-btn fill" onclick="openComingSoon()">Upgrade to Pro</button>
         </div>
     </div>
     <p style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--text-3);margin-top:18px;">Cancel anytime. No lock-in.</p>
@@ -612,10 +612,10 @@
             <div>
                 <div class="footer-col-title">Company</div>
                 <div class="footer-links">
-                    <a href="#">About</a>
-                    <a href="#">Contact</a>
-                    <a href="#">Privacy</a>
-                    <a href="#">Terms</a>
+                    <a href="{{ route('about') }}">About</a>
+                    <a href="{{ route('contact') }}">Contact</a>
+                    <a href="{{ route('privacy') }}">Privacy</a>
+                    <a href="{{ route('terms') }}">Terms</a>
                 </div>
             </div>
         </div>
@@ -626,7 +626,21 @@
         </div>
     </div>
 </footer>
-
+<!-- Coming Soon Modal -->
+<div id="coming-soon-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--bg-2);border:1px solid rgba(91,127,255,0.25);border-radius:24px;padding:48px 40px;max-width:420px;width:100%;text-align:center;position:relative;overflow:hidden;animation:fadeUp 0.3s ease both;">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent-2),transparent);"></div>
+        <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;box-shadow:0 16px 48px rgba(91,127,255,0.3);">🚀</div>
+        <div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Coming Soon</div>
+        <h3 style="font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px;">Pro Plan Launching Soon</h3>
+        <p style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:28px;">We're putting the finishing touches on Pro. You'll get unlimited requests, multiple tunnels, password protection, and more.<br><br>Stay tuned — launching very soon! 🎉</p>
+        <div style="background:var(--bg-3);border:1px solid var(--border-2);border-radius:10px;padding:14px 18px;margin-bottom:24px;font-family:var(--mono);font-size:12px;color:var(--text-2);">
+            <span style="color:var(--green);">✓</span> Free plan is fully live — start using it now
+        </div>
+        <button onclick="closeComingSoon()" style="width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.2s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Got it!</button>
+        <button onclick="closeComingSoon()" style="margin-top:10px;width:100%;padding:8px;background:none;border:none;font-size:13px;color:var(--text-3);cursor:pointer;font-family:var(--font);">Close</button>
+    </div>
+</div>
 <script>
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
@@ -658,7 +672,17 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); history.pushState(null, '', window.location.pathname); }
     });
 });
-
+function openComingSoon() {
+    const modal = document.getElementById('coming-soon-modal');
+    modal.style.display = 'flex';
+}
+function closeComingSoon() {
+    const modal = document.getElementById('coming-soon-modal');
+    modal.style.display = 'none';
+}
+document.getElementById('coming-soon-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeComingSoon();
+});
 function setRating(val) {
     document.getElementById('rating-input').value = val;
     for(let i=1;i<=5;i++) {

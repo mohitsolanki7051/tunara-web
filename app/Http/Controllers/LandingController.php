@@ -28,4 +28,27 @@ class LandingController extends Controller
     {
         return view('landing.download');
     }
+    public function about()
+{
+    $page = \App\Models\Page::where('slug', 'about')->first();
+    return view('about', compact('page'));
+}
+
+public function contact()
+{
+    $page = \App\Models\Page::where('slug', 'contact')->first();
+    return view('contact', compact('page'));
+}
+
+public function privacy()
+{
+    $page = \App\Models\Page::where('slug', 'privacy')->first();
+    return view('privacy', compact('page'));
+}
+
+public function terms()
+{
+    $page = \App\Models\Page::where('slug', 'terms')->first();
+    return view('terms', compact('page'));
+}
 }
