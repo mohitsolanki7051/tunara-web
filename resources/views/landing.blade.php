@@ -522,7 +522,7 @@
                 <input type="hidden" name="rating" id="rating-input" value="5">
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
                 <div>
                     <label style="font-size:12px;font-weight:500;color:var(--text-2);margin-bottom:6px;display:block;">Your name *</label>
                     <input type="text" name="name" required placeholder="John Doe" value="{{ old('name') }}"
@@ -535,6 +535,14 @@
                         style="width:100%;background:var(--bg-3);border:1px solid var(--border-2);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:var(--font);"
                         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
                 </div>
+            </div>
+
+            {{-- Email full width alag row mein --}}
+            <div style="margin-bottom:12px;">
+                <label style="font-size:12px;font-weight:500;color:var(--text-2);margin-bottom:6px;display:block;">Email Address *</label>
+                <input type="email" name="email" required placeholder="you@example.com" value="{{ old('email') }}"
+                    style="width:100%;background:var(--bg-3);border:1px solid var(--border-2);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:var(--font);"
+                    onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
             </div>
 
             <div style="margin-bottom:16px;">

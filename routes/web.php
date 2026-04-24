@@ -33,6 +33,9 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/email/verify-otp', [AuthController::class, 'showOtpVerify'])->name('otp.verify');
+    Route::post('/email/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify.submit');
+    Route::post('/email/resend-otp', [AuthController::class, 'resendOtp'])->name('otp.resend');
 });
 
 // User Protected Routes
@@ -76,5 +79,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/contacts', [ContactAdminController::class, 'index'])->name('contacts.index');
         Route::get('/contacts/{id}', [ContactAdminController::class, 'show'])->name('contacts.show');
         Route::delete('/contacts/{id}', [ContactAdminController::class, 'destroy'])->name('contacts.destroy');
+        Route::post('/contacts/{id}/reply', [ContactAdminController::class, 'reply'])->name('contacts.reply');
     });
 });
