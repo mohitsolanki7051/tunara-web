@@ -24,7 +24,16 @@ class BrevoMail
             'subject'     => $subject,
             'htmlContent' => $htmlContent,
         ]);
-Log::info('Brevo response: ' . $response->body());
+// 🔍 ENV + response debug
+Log::info('ENV CHECK', [
+    'api_key' => env('BREVO_API_KEY'),
+    'from'    => env('MAIL_FROM_ADDRESS'),
+]);
+
+Log::info('BREVO RESPONSE', [
+    'status' => $response->status(),
+    'body'   => $response->body(),
+]);
         if (!$response->successful()) {
             Log::error('Brevo mail failed: ' . $response->body());
             return false;
