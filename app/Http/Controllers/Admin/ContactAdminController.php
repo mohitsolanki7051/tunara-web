@@ -31,14 +31,18 @@ class ContactAdminController extends Controller
 
         $message = ContactMessage::findOrFail($id);
 
-        \Illuminate\Support\Facades\Mail::to($message->email)
-            ->send(new \App\Mail\AdminReplyMail(
-                $message->name,
-                $request->reply_message,
-                $message->subject
-            ));
+        \App\Helpers\BrevoMail::send(
+            $message->email,
+            $message->name,
+            'Re: ' . $message->subject . ' — Tunara Support',
+            view('emails.admin-reply', [
+                'userName'        => $message->name,
+                'replyMessage'    => $request->reply_message,
+                'originalSubject' => $message->subject,
+            ])->render()
+        );
 
-        // Reply history save karo
+
         $replies = $message->replies ?? [];
         $replies[] = [
             'message'    => $request->reply_message,

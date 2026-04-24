@@ -14,123 +14,129 @@ class AuthController extends Controller
         return view('auth.register');
     }
     public function showOtpVerify()
-{
-    if (!session('pending_user')) {
-        return redirect()->route('register');
-    }
-    return view('auth.otp-verify');
-}
-
-public function verifyOtp(Request $request)
-{
-    $request->validate(['otp' => 'required|string|size:6']);
-
-    $pending = session('pending_user');
-    if (!$pending) {
-        return redirect()->route('register');
+    {
+        if (!session('pending_user')) {
+            return redirect()->route('register');
+        }
+        return view('auth.otp-verify');
     }
 
-    $otpRecord = \App\Models\OtpVerification::where('email', $pending['email'])
-        ->where('verified', false)
-        ->first();
+    public function verifyOtp(Request $request)
+    {
+        $request->validate(['otp' => 'required|string|size:6']);
 
-    if (!$otpRecord) {
-        return back()->withErrors(['otp' => 'Invalid or expired OTP. Please try again.']);
-    }
+        $pending = session('pending_user');
+        if (!$pending) {
+            return redirect()->route('register');
+        }
 
-    if (now()->isAfter($otpRecord->expires_at)) {
+        $otpRecord = \App\Models\OtpVerification::where('email', $pending['email'])
+            ->where('verified', false)
+            ->first();
+
+        if (!$otpRecord) {
+            return back()->withErrors(['otp' => 'Invalid or expired OTP. Please try again.']);
+        }
+
+        if (now()->isAfter($otpRecord->expires_at)) {
+            $otpRecord->delete();
+            return back()->withErrors(['otp' => 'OTP has expired. Please register again.']);
+        }
+
+        if (!\Illuminate\Support\Facades\Hash::check($request->otp, $otpRecord->otp)) {
+            return back()->withErrors(['otp' => 'Incorrect OTP. Please try again.']);
+        }
+
+
+        $user = \App\Models\User::create([
+            'name'     => $pending['name'],
+            'email'    => $pending['email'],
+            'password' => $pending['password'],
+            'plan'     => 'free',
+        ]);
+
+
         $otpRecord->delete();
-        return back()->withErrors(['otp' => 'OTP has expired. Please register again.']);
+        session()->forget('pending_user');
+
+
+        \App\Models\Token::create([
+            'user_id' => (string) $user->id,
+            'token'   => \Illuminate\Support\Str::random(32),
+        ]);
+
+     
+        \Illuminate\Support\Facades\Auth::login($user);
+
+        return redirect()->route('dashboard');
     }
 
-    if (!\Illuminate\Support\Facades\Hash::check($request->otp, $otpRecord->otp)) {
-        return back()->withErrors(['otp' => 'Incorrect OTP. Please try again.']);
+    public function resendOtp(Request $request)
+    {
+        $pending = session('pending_user');
+        if (!$pending) {
+            return redirect()->route('register');
+        }
+
+        $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        \App\Models\OtpVerification::where('email', $pending['email'])->delete();
+        \App\Models\OtpVerification::create([
+            'email'      => $pending['email'],
+            'otp'        => bcrypt($otp),
+            'expires_at' => now()->addMinutes(10),
+            'verified'   => false,
+        ]);
+
+        \App\Helpers\BrevoMail::send(
+            $pending['email'],
+            $pending['name'],
+            'Your Tunara Verification Code',
+            view('emails.otp', ['otp' => $otp, 'userName' => $pending['name']])->render()
+        );
+
+        return back()->with('resent', 'Verification code resent successfully!');
     }
 
-    // User banao
-    $user = \App\Models\User::create([
-        'name'     => $pending['name'],
-        'email'    => $pending['email'],
-        'password' => $pending['password'],
-        'plan'     => 'free',
-    ]);
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
+        ]);
 
-    // OTP delete karo
-    $otpRecord->delete();
-    session()->forget('pending_user');
 
-    // Token banao
-    \App\Models\Token::create([
-        'user_id' => (string) $user->id,
-        'token'   => \Illuminate\Support\Str::random(32),
-    ]);
+        $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-    // Login karwa do
-    \Illuminate\Support\Facades\Auth::login($user);
 
-    return redirect()->route('dashboard');
-}
+        \App\Models\OtpVerification::where('email', $request->email)->delete();
 
-public function resendOtp(Request $request)
-{
-    $pending = session('pending_user');
-    if (!$pending) {
-        return redirect()->route('register');
+
+        \App\Models\OtpVerification::create([
+            'email'      => $request->email,
+            'otp'        => bcrypt($otp),
+            'expires_at' => now()->addMinutes(10),
+            'verified'   => false,
+        ]);
+
+        session([
+            'pending_user' => [
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => bcrypt($request->password),
+            ]
+        ]);
+
+        \App\Helpers\BrevoMail::send(
+            $request->email,
+            $request->name,
+            'Your Tunara Verification Code',
+            view('emails.otp', ['otp' => $otp, 'userName' => $request->name])->render()
+        );
+
+        return redirect()->route('otp.verify');
     }
-
-    $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-
-    \App\Models\OtpVerification::where('email', $pending['email'])->delete();
-    \App\Models\OtpVerification::create([
-        'email'      => $pending['email'],
-        'otp'        => bcrypt($otp),
-        'expires_at' => now()->addMinutes(10),
-        'verified'   => false,
-    ]);
-
-    \Illuminate\Support\Facades\Mail::to($pending['email'])
-        ->send(new \App\Mail\OtpMail($otp, $pending['name']));
-
-    return back()->with('resent', 'Verification code resent successfully!');
-}
-
-public function register(Request $request)
-{
-    $request->validate([
-        'name'     => 'required|string|max:255',
-        'email'    => 'required|email|unique:users,email',
-        'password' => 'required|min:8|confirmed',
-    ]);
-
-    // OTP generate karo
-    $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-
-    // Purana OTP delete karo
-    \App\Models\OtpVerification::where('email', $request->email)->delete();
-
-    // Naya OTP save karo
-    \App\Models\OtpVerification::create([
-        'email'      => $request->email,
-        'otp'        => bcrypt($otp),
-        'expires_at' => now()->addMinutes(10),
-        'verified'   => false,
-    ]);
-
-    // User data session mein save karo (abhi user nahi banate)
-    session([
-        'pending_user' => [
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => bcrypt($request->password),
-        ]
-    ]);
-
-    // Email bhejo
-    \Illuminate\Support\Facades\Mail::to($request->email)
-        ->send(new \App\Mail\OtpMail($otp, $request->name));
-
-    return redirect()->route('otp.verify');
-}
 
     public function showLogin()
     {

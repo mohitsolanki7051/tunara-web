@@ -33,11 +33,15 @@ class ReviewController extends Controller
             'text'            => $request->text,
             'is_approved'     => false,
             'show_on_landing' => false,
-            'ip'              => $request->ip(), // Admin ke liye IP log karo
+            'ip'              => $request->ip(),
             'submitted_at'    => now(),
         ]);
-        \Illuminate\Support\Facades\Mail::to($request->email)
-        ->send(new \App\Mail\ReviewThankYouMail($request->name));
+        \App\Helpers\BrevoMail::send(
+            $request->email,
+            $request->name,
+            'Thank You for Your Review — Tunara',
+            view('emails.review-thankyou', ['userName' => $request->name])->render()
+        );
         return redirect()->back()->with('review_success', 'Thank you for your review! It will be visible after approval.');
     }
 }
