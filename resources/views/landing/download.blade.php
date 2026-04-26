@@ -216,8 +216,8 @@
             <div class="step-num">5</div>
             <div class="step-body">
                 <h4>Click Start Tunnel — you're live</h4>
-                <p>Enter your local port and click Start Tunnel. Your project is now accessible from anywhere in the world.</p>
-                <span class="step-code">Port: 8000 → Start Tunnel → ✓ Connected</span>
+                <p>Enter your local project URL with port (e.g. http://localhost:8000) and click Start Tunnel. Your project is now accessible from anywhere in the world.</p>
+                <span class="step-code">http://localhost:8000 → Start Tunnel → ✓ Connected</span>
             </div>
         </div>
     </div>
