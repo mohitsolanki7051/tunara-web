@@ -367,7 +367,7 @@
             <div class="step-num">03</div>
             <div class="step-icon">⚡</div>
             <div class="step-title">Create tunnel</div>
-            <div class="step-desc">Click "New Tunnel" on the dashboard, enter your local project URL with port (e.g. http://localhost:8000). Token and ID auto-fill in the app.</div>
+            <div class="step-desc">Click "New Tunnel" on the dashboard, enter your local URL with port. Token and ID auto-fill in the app.</div>
             <div class="step-code">URL: <span class="sc-blue">http://localhost:8000</span><br><span class="sc-green">✓</span> tunnel connected</div>
         </div>
         <div class="step-card" data-anim>
