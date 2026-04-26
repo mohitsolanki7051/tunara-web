@@ -437,9 +437,11 @@
             <a href="{{ route('register') }}" class="price-btn outline">Get started free</a>
         </div>
         <div class="price-card pro">
-            <div class="price-badge">⭐ Most popular</div>
+            {{-- <div class="price-badge">⭐ Most popular</div> --}}
             <div class="price-plan">Pro</div>
-            <div class="price-amount"><sup>₹</sup>{{ number_format($pro->price ?? 9, 0) }}<span class="price-period"> /month</span></div>
+            {{-- <div class="price-amount"><sup>₹</sup>{{ number_format($pro->price ?? 9, 0) }}<span class="price-period"> /month</span></div> --}}
+            <div class="price-amount"><span style="font-size:20px;letter-spacing:-0.01em;">Coming Soon</span></div>
+
             <div class="price-desc">For professionals who need more tunnels, custom domains, and advanced security.</div>
             <div class="price-div"></div>
             <div class="price-features">
