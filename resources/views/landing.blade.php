@@ -638,10 +638,10 @@
 <div id="coming-soon-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px;">
     <div style="background:var(--bg-2);border:1px solid rgba(91,127,255,0.25);border-radius:24px;padding:48px 40px;max-width:420px;width:100%;text-align:center;position:relative;overflow:hidden;animation:fadeUp 0.3s ease both;">
         <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent-2),transparent);"></div>
-        <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;box-shadow:0 16px 48px rgba(91,127,255,0.3);">🚀</div>
+        <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;box-shadow:0 16px 48px rgba(91,127,255,0.3);">⭐</div>
         <div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Coming Soon</div>
         <h3 style="font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px;">Pro Plan Launching Soon</h3>
-        <p style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:28px;">We're putting the finishing touches on Pro. You'll get unlimited requests, multiple tunnels, password protection, and more.<br><br>Stay tuned — launching very soon! 🎉</p>
+        <p style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:28px;">We are working hard to bring you the Pro plan with unlimited requests, multiple tunnels, and password protection. Please leave a review and help us grow — your feedback means a lot to us.</p>
         <div style="background:var(--bg-3);border:1px solid var(--border-2);border-radius:10px;padding:14px 18px;margin-bottom:24px;font-family:var(--mono);font-size:12px;color:var(--text-2);">
             <span style="color:var(--green);">✓</span> Free plan is fully live — start using it now
         </div>

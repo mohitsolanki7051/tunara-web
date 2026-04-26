@@ -123,7 +123,7 @@
         <p>Approaching Daily Limit</p>
         <p>{{ $todayTotal }} of {{ $maxRequests }} requests used today. Upgrade to Pro for unlimited.</p>
     </div>
-    <a href="#" class="btn btn-primary btn-sm">Upgrade to Pro</a>
+    <button onclick="openComingSoon()" class="btn btn-primary btn-sm">Upgrade to Pro</button>
 </div>
 @endif
 
@@ -270,5 +270,28 @@
     </div>
     @endif
 </div>
+<div id="coming-soon-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--bg-2);border:1px solid rgba(91,127,255,0.25);border-radius:24px;padding:48px 40px;max-width:420px;width:100%;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent-2),transparent);"></div>
+        <div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Coming Soon</div>
+        <h3 style="font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px;">Pro Plan Launching Soon</h3>
+        <p style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:28px;">We are working hard to bring you the Pro plan with unlimited requests, multiple tunnels, and password protection. Please leave a review and help us grow — your feedback means a lot to us.</p>
+        <div style="background:var(--bg-3);border:1px solid var(--border-2);border-radius:10px;padding:14px 18px;margin-bottom:24px;font-family:var(--mono);font-size:12px;color:var(--text-2);">
+            <span style="color:var(--green);">✓</span> Free plan is fully live — start using it now
+        </div>
+        <button onclick="closeComingSoon()" style="width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);">Got it!</button>
+        <button onclick="closeComingSoon()" style="margin-top:10px;width:100%;padding:8px;background:none;border:none;font-size:13px;color:var(--text-3);cursor:pointer;font-family:var(--font);">Close</button>
+    </div>
+</div>
 
+@endsection
+@section('scripts')
+<script>
+function openComingSoon() {
+    document.getElementById('coming-soon-modal').style.display = 'flex';
+}
+function closeComingSoon() {
+    document.getElementById('coming-soon-modal').style.display = 'none';
+}
+</script>
 @endsection
