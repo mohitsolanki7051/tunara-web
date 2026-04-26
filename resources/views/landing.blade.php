@@ -482,7 +482,7 @@
         @endforeach
     </div>
     @else
-    <!-- Static fallback jab koi review nahi -->
+
     <div class="testi-grid">
         <div class="testi-card" data-anim><div class="testi-stars">★★★★★</div><div class="testi-text">"Finally an ngrok alternative that works great in India. Setup under a minute and my client saw my project instantly."</div><div class="testi-author"><div class="testi-avatar">R</div><div><div class="testi-name">Rahul Sharma</div><div class="testi-role">freelance dev</div></div></div></div>
         <div class="testi-card" data-anim><div class="testi-stars">★★★★★</div><div class="testi-text">"The deep link feature is brilliant — one click from the dashboard and everything auto-fills. Saves so much time during demos."</div><div class="testi-author"><div class="testi-avatar">P</div><div><div class="testi-name">Priya Nair</div><div class="testi-role">fullstack dev</div></div></div></div>
@@ -490,7 +490,7 @@
     </div>
     @endif
 
-    <!-- Review Submit Form -->
+
     <div style="max-width:540px;margin:48px auto 0;background:var(--bg-2);border:1px solid var(--border-2);border-radius:var(--r-lg);padding:32px;position:relative;overflow:hidden;">
         <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);"></div>
         <div style="text-align:center;margin-bottom:24px;">
@@ -697,7 +697,7 @@ function setRating(val) {
         document.getElementById('star-'+i).style.color = i <= val ? '#fbbf24' : 'var(--text-3)';
     }
 }
-setRating(5); // Default 5 stars
+setRating(5);
 </script>
 </body>
 </html>

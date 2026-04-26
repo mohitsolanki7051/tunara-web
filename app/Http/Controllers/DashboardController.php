@@ -25,7 +25,7 @@ public function index()
         ]);
     }
 
-    // Hamesha Railway ko token bhejo — fail hone pe ignore karo
+
     $serverConnected = true;
     try {
         Http::timeout(5)->post(env('RAILWAY_SERVER_URL') . '/api/token/store', [
@@ -33,7 +33,7 @@ public function index()
             'userId' => (string) $user->id,
         ]);
     } catch (\Exception $e) {
-        // Server unreachable — silently ignore, user dashboard pe aa jaaye
+
         $serverConnected = false;
     }
 

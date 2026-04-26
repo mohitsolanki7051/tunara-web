@@ -40,7 +40,7 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => 'User not found.'], 404);
         }
 
-        // User ke tunnels aur tokens bhi delete karo
+
         Tunnel::where('user_id', (string) $user->id)->delete();
         Token::where('user_id', (string) $user->id)->delete();
         $user->delete();

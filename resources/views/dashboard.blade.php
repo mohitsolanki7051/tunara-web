@@ -468,24 +468,24 @@
                 document.getElementById(`tunnel-row-${tunnelId}`)?.remove();
                 showToast('Tunnel deleted!');
 
-                // Total count update karo
+
                 const totalEl = document.getElementById('total-count');
                 const oldCount = totalEl ? parseInt(totalEl.textContent) : 1;
                 const newCount = oldCount - 1;
                 if (totalEl) totalEl.textContent = newCount;
 
-                // stat-sub update karo (x/y used on Plan)
+
                 const statSub = totalEl?.closest('.stat')?.querySelector('.stat-sub');
                 if (statSub) statSub.textContent = `${newCount}/${MAX_TUNNELS} used on {{ ucfirst($userPlan) }} plan`;
 
                 refreshPagination();
 
-                // Limit banner hide karo
+
                 if (newCount < MAX_TUNNELS) {
                     const banner = document.querySelector('.limit-banner');
                     if (banner) banner.style.display = 'none';
 
-                    // Header button: Limit Reached → New Tunnel
+
                     const limitBtn = document.querySelector('.topbar button[disabled]');
                     if (limitBtn) {
                         limitBtn.disabled = false;
@@ -496,7 +496,7 @@
                         limitBtn.className = 'btn btn-primary btn-sm';
                     }
 
-                    // Tunnels header mein + Create New add karo
+
                     const tunnelsHeader = document.querySelector('.tunnels-header');
                     if (tunnelsHeader && !tunnelsHeader.querySelector('button')) {
                         const createBtn = document.createElement('button');
@@ -506,7 +506,7 @@
                     }
                 }
 
-                // Empty state
+
                 const remaining = document.querySelectorAll('#tunnels-list .tunnel-row').length;
                 if (remaining === 0) {
                     const list = document.getElementById('tunnels-list');
@@ -614,16 +614,16 @@
                 addTunnelRow(data.tunnel_id, localUrl, data.public_url, data.port);
                 openAppModal(data.public_url, data.tunnel_id, data.port);
 
-                // Total count update karo
+
                 const totalEl = document.getElementById('total-count');
                 const newCount = totalEl ? parseInt(totalEl.textContent) + 1 : 1;
                 if (totalEl) totalEl.textContent = newCount;
 
-                // stat-sub update karo
+
                 const statSub = totalEl?.closest('.stat')?.querySelector('.stat-sub');
                 if (statSub) statSub.textContent = `${newCount}/${MAX_TUNNELS} used on {{ ucfirst($userPlan) }} plan`;
 
-                // Agar limit reach ho gayi to header button update karo
+
                 if (newCount >= MAX_TUNNELS) {
                     const newBtn = document.querySelector('.topbar button.btn-primary');
                     if (newBtn) {
@@ -634,7 +634,7 @@
                         newBtn.onclick = null;
                         newBtn.className = 'btn btn-ghost btn-sm';
                     }
-                    // Tunnels header mein + Create New button hatao
+
                     const tunnelsHeader = document.querySelector('.tunnels-header button');
                     if (tunnelsHeader) tunnelsHeader.remove();
                 }
@@ -692,9 +692,9 @@
         const headerActions = document.querySelector('[data-header-actions]') ||
             document.querySelector('.topbar > div:last-child');
 
-        // Reload page to properly update Blade conditionals
+
         if (currentCount < MAX_TUNNELS) {
-            // Replace limit reached with new tunnel button
+
             const limitBtn = document.querySelector('.topbar button[disabled]');
             if (limitBtn) {
                 limitBtn.disabled = false;
@@ -704,7 +704,7 @@
                 limitBtn.onclick = openCreateModal;
                 limitBtn.className = 'btn btn-primary btn-sm';
             }
-            // Hide limit banner
+
             const banner = document.querySelector('.limit-banner');
             if (banner) banner.style.display = 'none';
         }

@@ -15,7 +15,6 @@ class ReviewController extends Controller
         }
 
 
-        // ─── 3. FORM VALIDATION ────────────────────────────────────────
         $request->validate([
             'name'   => 'required|string|max:60',
              'email'  => 'required|email|max:100',
@@ -24,7 +23,6 @@ class ReviewController extends Controller
             'text'   => 'required|string|min:10|max:500',
         ]);
 
-        // ─── 4. SAVE REVIEW ────────────────────────────────────────────
         Review::create([
             'name'            => $request->name,
              'email'           => $request->email,

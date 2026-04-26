@@ -24,7 +24,7 @@ class BrevoMail
             'subject'     => $subject,
             'htmlContent' => $htmlContent,
         ]);
-// 🔍 ENV + response debug
+
 Log::info('ENV CHECK', [
     'api_key' => env('BREVO_API_KEY'),
     'from'    => env('MAIL_FROM_ADDRESS'),

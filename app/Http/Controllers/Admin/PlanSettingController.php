@@ -13,7 +13,7 @@ class PlanSettingController extends Controller
         $free = PlanSetting::where('plan', 'free')->first();
         $pro  = PlanSetting::where('plan', 'pro')->first();
 
-        // Default create karo agar exist nahi karta
+
         if (!$free) {
             $free = PlanSetting::create([
                 'plan'                   => 'free',

@@ -23,7 +23,7 @@ public function index(Request $request)
     $planSetting = PlanSetting::where('plan', $userPlan)->first();
     $maxRequests = $planSetting ? (int) $planSetting->max_requests_per_day : 1000;
 
-    // Period based start date
+
     $days = match($period) {
         '30days' => 30,
         '6months' => 180,
@@ -33,24 +33,24 @@ public function index(Request $request)
 
     $startDate = now()->subDays($days - 1)->toDateString();
 
-    // Aaj ki total
+
     $todayTotal = RequestLog::whereIn('tunnel_id', $tunnelIds)
         ->where('date', $today)->get()->sum('count');
 
-    // Period data
+
     $periodLogs = RequestLog::whereIn('tunnel_id', $tunnelIds)
         ->where('date', '>=', $startDate)->get()
         ->groupBy('date')
         ->map(fn($g) => $g->sum('count'));
 
-    // Fill missing dates with 0
+
     $chartData = [];
     for ($i = $days - 1; $i >= 0; $i--) {
         $date            = now()->subDays($i)->toDateString();
         $chartData[$date] = $periodLogs[$date] ?? 0;
     }
 
-    // 6months/1year ke liye weekly group karo
+
     if (in_array($period, ['6months', '1year'])) {
         $grouped = [];
         foreach ($chartData as $date => $count) {
@@ -60,7 +60,7 @@ public function index(Request $request)
         $chartData = $grouped;
     }
 
-    // Per tunnel (aaj)
+
     $perTunnel = $tunnels->map(function ($t) use ($today) {
         $log = RequestLog::where('tunnel_id', $t->tunnel_id)
             ->where('date', $today)->first();
@@ -72,12 +72,12 @@ public function index(Request $request)
         ];
     });
 
-    // Last 30 days total
+
     $last30 = RequestLog::whereIn('tunnel_id', $tunnelIds)
         ->where('date', '>=', now()->subDays(29)->toDateString())
         ->get()->sum('count');
 
-    // Period total
+
     $periodTotal = array_sum($chartData);
 
     return view('analytics', compact(

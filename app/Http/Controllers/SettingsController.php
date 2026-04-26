@@ -70,7 +70,7 @@ class SettingsController extends Controller
             ]);
         }
 
-        // Railway ko naya token bhejo
+
         \Http::post(env('RAILWAY_SERVER_URL') . '/api/token/store', [
             'token'  => $newToken,
             'userId' => (string) $user->id,
@@ -87,7 +87,7 @@ class SettingsController extends Controller
 
         $user = Auth::user();
 
-        // Saara data delete karo
+
         Tunnel::where('user_id', $user->id)->delete();
         Token::where('user_id', $user->id)->delete();
         $user->delete();

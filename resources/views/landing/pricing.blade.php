@@ -232,7 +232,6 @@
     </div>
 </footer>
 
-<!-- Coming Soon Modal -->
 <div id="coming-soon-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px;">
     <div style="background:var(--bg-2);border:1px solid rgba(91,127,255,0.25);border-radius:24px;padding:48px 40px;max-width:420px;width:100%;text-align:center;position:relative;overflow:hidden;">
         <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent-2),transparent);"></div>

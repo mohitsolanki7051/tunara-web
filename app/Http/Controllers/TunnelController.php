@@ -21,11 +21,11 @@ class TunnelController extends Controller
         $user     = Auth::user();
         $userPlan = $user->plan ?? 'free';
 
-        // Plan settings lo
+
         $planSetting = PlanSetting::where('plan', $userPlan)->first();
         $maxTunnels  = $planSetting ? $planSetting->max_tunnels : 1;
 
-        // Tunnel limit check
+
         $existingCount = Tunnel::where('user_id', $user->id)->count();
         if ($existingCount >= $maxTunnels) {
             return response()->json([
@@ -36,7 +36,7 @@ class TunnelController extends Controller
             ], 403);
         }
 
-        // Password protection — sirf Pro ke liye
+
         $isProtected = false;
         $password    = null;
 
@@ -56,7 +56,7 @@ class TunnelController extends Controller
             return response()->json(['success' => false, 'message' => 'Token not found.'], 404);
         }
 
-        // Railway pe register karo
+
         $response = \Http::post(env('RAILWAY_SERVER_URL') . '/api/tunnel/register', [
             'localUrl' => $request->local_url,
             'isProtected' => $isProtected,

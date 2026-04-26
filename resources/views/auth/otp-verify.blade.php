@@ -86,7 +86,7 @@
 </div>
 
 <script>
-// OTP inputs auto-focus
+
 const inputs = document.querySelectorAll('.otp-input');
 const hidden = document.getElementById('otp-hidden');
 const btn    = document.getElementById('verify-btn');
@@ -129,7 +129,7 @@ function updateHidden() {
     btn.disabled = otp.length !== 6;
 }
 
-// Countdown timer
+
 let seconds = 600;
 const countdown = document.getElementById('countdown');
 const timer = setInterval(() => {
