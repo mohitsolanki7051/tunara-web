@@ -706,6 +706,7 @@ document.getElementById('review-submit-btn').addEventListener('click', function(
     e.preventDefault();
     grecaptcha.ready(function() {
         grecaptcha.execute('{{ config("services.recaptcha.site_key") }}', {action: 'review_submit'}).then(function(token) {
+            console.log('Token:', token);
             document.getElementById('g-recaptcha-response').value = token;
             document.getElementById('review-submit-btn').closest('form').submit();
         });
