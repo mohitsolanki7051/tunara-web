@@ -233,6 +233,7 @@
             .cta-box{padding:36px 20px} .cta-actions{flex-direction:column}
         }
     </style>
+    <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
 </head>
 <body>
 
@@ -555,12 +556,13 @@
                 @error('text')<span style="font-size:11px;color:#ff4d6a;">{{ $message }}</span>@enderror
             </div>
 
-            <button type="submit"
+            <button type="submit" id="review-submit-btn"
                 style="width:100%;padding:11px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.2s;"
                 onmouseover="this.style.opacity='0.9';this.style.transform='translateY(-1px)'"
                 onmouseout="this.style.opacity='1';this.style.transform='translateY(0)'">
                 Submit Review
             </button>
+            <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
         </form>
     </div>
 </section>
@@ -700,6 +702,15 @@ function setRating(val) {
     }
 }
 setRating(5);
+document.getElementById('review-submit-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    grecaptcha.ready(function() {
+        grecaptcha.execute('{{ config("services.recaptcha.site_key") }}', {action: 'review_submit'}).then(function(token) {
+            document.getElementById('g-recaptcha-response').value = token;
+            document.getElementById('review-submit-btn').closest('form').submit();
+        });
+    });
+});
 </script>
 </body>
 </html>

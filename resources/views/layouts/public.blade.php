@@ -193,7 +193,7 @@ document.querySelectorAll('a, button').forEach(el => {
     el.addEventListener('mouseleave', () => { cursor.style.transform='scale(1)'; ring.style.transform='scale(1)'; });
 });
 </script>
-
+@stack('scripts')
 @yield('scripts')
 </body>
 </html>

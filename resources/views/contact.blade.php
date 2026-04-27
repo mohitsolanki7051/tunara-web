@@ -1,6 +1,8 @@
 @extends('layouts.public')
 @section('title', 'Contact — Tunara')
-
+@push('scripts')
+<script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+@endpush
 @section('content')
 <section style="max-width:680px;margin:0 auto;padding:120px 48px 80px;">
     <div style="font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;">Contact</div>
@@ -62,13 +64,27 @@
                 @error('message')<p style="font-size:11px;color:#ff4d6a;margin-top:4px;">{{ $message }}</p>@enderror
             </div>
 
-            <button type="submit"
+            <button type="submit" id="contact-submit-btn"
                 style="width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.2s;"
                 onmouseover="this.style.opacity='0.88';this.style.transform='translateY(-1px)'"
                 onmouseout="this.style.opacity='1';this.style.transform='translateY(0)'">
                 Send Message
             </button>
+            <input type="hidden" name="g-recaptcha-response" id="contact-recaptcha-response">
         </form>
     </div>
 </section>
+@endsection
+@section('scripts')
+<script>
+document.getElementById('contact-submit-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    grecaptcha.ready(function() {
+        grecaptcha.execute('{{ config("services.recaptcha.site_key") }}', {action: 'contact_submit'}).then(function(token) {
+            document.getElementById('contact-recaptcha-response').value = token;
+            document.querySelector('form[action="{{ route(\'contact.submit\') }}"]').submit();
+        });
+    });
+});
+</script>
 @endsection

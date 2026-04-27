@@ -13,6 +13,28 @@ class ReviewController extends Controller
         if (!empty($request->input('website'))) {
             return redirect()->back()->with('review_success', 'Thank you for your review! It will be visible after approval.');
         }
+        // ─── reCAPTCHA VERIFY ───────────────────────────────────────
+        $token = $request->input('g-recaptcha-response');
+
+        if (!$token) {
+            return redirect()->back()
+                ->withErrors(['captcha' => 'reCAPTCHA verification failed.'])
+                ->withInput();
+        }
+
+        $response = \Illuminate\Support\Facades\Http::post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret'   => config('services.recaptcha.secret_key'),
+            'response' => $token,
+            'remoteip' => $request->ip(),
+        ]);
+
+        $result = $response->json();
+
+        if (!($result['success'] ?? false) || ($result['score'] ?? 0) < 0.5) {
+            return redirect()->back()
+                ->withErrors(['captcha' => 'Bot detected. Please try again.'])
+                ->withInput();
+        }
 
 
         $request->validate([
