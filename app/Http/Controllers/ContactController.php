@@ -17,13 +17,12 @@ class ContactController extends Controller
             return back()->withErrors(['captcha' => 'reCAPTCHA verification failed.'])->withInput();
         }
 
-        $response = \Illuminate\Support\Facades\Http::post('https://www.google.com/recaptcha/api/siteverify', [
-            'secret'   => config('services.recaptcha.secret_key'),
-            'response' => $token,
-            'remoteip' => $request->ip(),
-        ]);
+        $url = 'https://www.google.com/recaptcha/api/siteverify?secret='
+            . config('services.recaptcha.secret_key')
+            . '&response=' . $token
+            . '&remoteip=' . $request->ip();
 
-        $result = $response->json();
+        $result = json_decode(file_get_contents($url), true);
 
         if (!($result['success'] ?? false) || ($result['score'] ?? 0) < 0.5) {
             return back()->withErrors(['captcha' => 'Bot detected. Please try again.'])->withInput();
