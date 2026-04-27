@@ -82,7 +82,8 @@ document.getElementById('contact-submit-btn').addEventListener('click', function
     grecaptcha.ready(function() {
         grecaptcha.execute('{{ config("services.recaptcha.site_key") }}', {action: 'contact_submit'}).then(function(token) {
             document.getElementById('contact-recaptcha-response').value = token;
-            document.querySelector('form[action="{{ route(\'contact.submit\') }}"]').submit();
+            document.querySelector('form').submit();
+
         });
     });
 });
